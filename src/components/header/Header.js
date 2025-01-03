@@ -1,25 +1,44 @@
 import Dialog from "@mui/material/Dialog";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Button } from "react-bootstrap";
 import { FaSearch, FaShoppingCart } from "react-icons/fa";
 import { HiOutlineLocationMarker } from "react-icons/hi";
-import { IoMdClose } from "react-icons/io";
+import { IoMdArrowDropdown, IoMdArrowDropup, IoMdClose } from "react-icons/io";
 import { IoMenu } from "react-icons/io5";
-const Header = () => {
+import { MyContext } from "../../App";
 
-  const [isopenModal , setisopenModal]=useState(false);
+const Header = () => {
+  const [isopenModal, setisopenModal] = useState(false);
   const closeModal = () => {
     setisopenModal(false); // Use setisopenModal to update the state
   };
-  
-const openModal =()=>{
-  setisopenModal(true);
-};
+
+  const openModal = () => {
+    setisopenModal(true);
+  };
+  const context = useContext(MyContext);
+  const [Selectedcountry, setSelectedcountry] = useState("India");
+
+  const [selectLanguage, setselectLangauage] = useState("EN");
+  const [showLanguagemenu,setshowLanguagemenu]=useState(false);
+
+  const handlelangmenu=(e)=>{
+    setselectLangauage(e.target.value);
+    setshowLanguagemenu(false);
+  }
+
+  const handlemouseenter=()=>{
+    setshowLanguagemenu(true);
+  }
+  const handlemouseclose =()=>{
+    setshowLanguagemenu(false);
+  }
+
   return (
     <>
       <header>
         <div className="navbar">
-          <div className="nav-logo border">
+          <div className="nav-logo border " >
             <div className="logo"></div>
           </div>
 
@@ -27,44 +46,51 @@ const openModal =()=>{
             <p className="first-add">Deliver to</p>
             <div className="add-icon" onClick={openModal}>
               <HiOutlineLocationMarker />
-              <p className="second-add">India</p>
+              <p className="second-add">{Selectedcountry}</p>
             </div>
-            <Dialog open={isopenModal}  onClose={closeModal}> 
-              <div className="locationModal" >
+            <Dialog open={isopenModal} onClose={closeModal}>
+              <div className="locationModal">
                 <div className="locationh2">
                   <h3>Choose your location</h3>
-                  <Button className="close" onClick={closeModal}><IoMdClose />  </Button>
+                  <Button className="close" onClick={closeModal}>
+                    <IoMdClose />{" "}
+                  </Button>
                 </div>
                 <div className="location-p">
                   <p>
                     Select a delivery location to see product availability and
                     delivery options
                   </p>
-                 
-                
                 </div>
                 <div>
-                  <input type="text"placeholder="Search location"className="search-location" />
-                 <button className="search ">  <FaSearch / ></button>
+                  <input
+                    type="text"
+                    placeholder="Search location"
+                    className="search-location"
+                  />
+                  <button className="search ">
+                    {" "}
+                    <FaSearch />
+                  </button>
                 </div>
 
                 <ul className="countryList">
-                  <li><Button>India</Button></li>
-                  <li><Button>Sri Lanka</Button></li>
-                  <li><Button>Australia</Button></li>
-                  <li><Button>Europe</Button></li>
-                  <li><Button>Bangladesh</Button></li>
-                  <li><Button>US</Button></li> 
-                  <li><Button>Bhutan</Button></li>
-                  <li><Button>India</Button></li>
-                  <li><Button>Sri Lanka</Button></li>
-                  <li><Button>Australia</Button></li>
-                  <li><Button>Europe</Button></li>
-                  <li><Button>Bangladesh</Button></li>
-                  <li><Button>US</Button></li>
-                  <li><Button>Bhutan</Button></li>
+                  {context.countryList?.length !== 0 &&
+                    context.countryList?.map((item, index) => {
+                      return (
+                        <li key={index}>
+                          <Button
+                            onClick={() => {
+                              setSelectedcountry(item.country);
+                              closeModal();
+                            }}
+                          >
+                            {item.country}{" "}
+                          </Button>
+                        </li>
+                      );
+                    })}
                 </ul>
-               
               </div>
             </Dialog>
           </div>
@@ -110,21 +136,59 @@ const openModal =()=>{
             </div>
           </div>
 
-          <div className="nav-country border">
+          <div className="nav-country border" onMouseEnter={handlemouseenter} onMouseLeave={handlemouseclose}>
             <div className="country-logo"></div>
-            <p className="second-add">
-              EN
-              <select name="" id="" className="add-select">
-                <option>EN</option>
-              </select>
-            </p>
+            <p className="second-add">{selectLanguage} </p>
+            <IoMdArrowDropdown className="down-arrow"/>
+{ showLanguagemenu && (
+            <div className="submenu">
+              <IoMdArrowDropup className="submenu-arrowup" />
+              <label>
+                <input type="radio" name="language" value="EN" checked={selectLanguage === "EN"} onChange={handlelangmenu} />{" "}
+                English - EN
+              </label>
+              <label>
+                <input type="radio" name="language" value="HI" checked={selectLanguage === "HI"} onChange={handlelangmenu}  /> हिंदी - HI
+              </label>
+              <label>
+                <input type="radio" name="language" value="TA" checked={selectLanguage === "TA"} onChange={handlelangmenu} /> தமிழ் - TA
+              </label>
+              <label>
+                <input type="radio" name="language" value="TE" checked={selectLanguage === "TE"} onChange={handlelangmenu} /> తెలుగు - TE
+              </label>
+              <label>
+                <input type="radio" name="language" value="KN" checked={selectLanguage === "KN"} onChange={handlelangmenu }/> ಕನ್ನಡ - KN
+              </label>
+              <label>
+                <input type="radio" name="language" value="ML" checked={selectLanguage === "ML"} onChange={handlelangmenu }/> മലയാളം - ML
+              </label>
+              <label>
+                <input type="radio" name="language" value="BN" checked={selectLanguage === "BN"} onChange={handlelangmenu }/> বাংলা - BN
+              </label>
+              <label>
+                <input type="radio" name="language" value="MR"  checked={selectLanguage === "MR"} onChange={handlelangmenu }/> मराठी - MR
+              </label>
+            </div>
+                )}
           </div>
 
           <div class="nav-signin border">
             <p>
               <span>Hello , sign in</span>
             </p>
-            <p class="nav-second">Accounts & list</p>
+            <p class="nav-second">
+              Accounts & list <IoMdArrowDropdown className="down-arrow" />
+            </p>
+
+            <div className="nav-submenu">
+              <IoMdArrowDropup className="nav-submenu-arrowup" />
+              <label>
+                <div className="submenu-signin">
+                  <button>Sign in</button>
+                  <p>New customer?Start here.</p>
+                </div>
+              </label>
+            </div>
           </div>
 
           <div class="nav-return border">
