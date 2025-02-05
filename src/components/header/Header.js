@@ -5,6 +5,7 @@ import { FaSearch, FaShoppingCart } from "react-icons/fa";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { IoMdArrowDropdown, IoMdArrowDropup, IoMdClose } from "react-icons/io";
 import { IoMenu } from "react-icons/io5";
+import { Link } from "react-router-dom";
 import { MyContext } from "../../App";
 
 const Header = () => {
@@ -38,9 +39,11 @@ const Header = () => {
     <>
       <header>
         <div className="navbar">
+          <Link to='/'>
           <div className="nav-logo border " >
             <div className="logo"></div>
           </div>
+          </Link>
 
           <div className="nav-address border">
             <p className="first-add">Deliver to</p>
@@ -184,7 +187,7 @@ const Header = () => {
               <IoMdArrowDropup className="nav-submenu-arrowup" />
               <label>
                 <div className="submenu-signin">
-                  <button>Sign in</button>
+                 <Link to='/SignIn'> <button>Sign in</button></Link>
                   <p>New customer?Start here.</p>
                 </div>
               </label>
@@ -197,11 +200,15 @@ const Header = () => {
             </p>
             <p class="nav-second">& Orders</p>
           </div>
+
+         <Link to='/cart'>
           <div class="nav-cart border">
             <FaShoppingCart className="cart-icon" />
             <div />
             <p className="cart">Cart</p>
           </div>
+          </Link>
+
         </div>
 
         <div className="panel">

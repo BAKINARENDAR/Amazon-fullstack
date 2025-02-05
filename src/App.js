@@ -2,10 +2,17 @@ import { createContext, useEffect, useState } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom"; // Add necessary imports
 import "./App.css";
+import Footer from "./components/footer/footer";
 import Header from "./components/header/Header";
 
 import axios from "axios"; //it's used to fetch country data from an API
+import Cart from "./pages/Cart";
 import Home from "./pages/Home";
+import Listing from "./pages/Listing/Listing";
+import ProductDetails from "./pages/ProductDetails";
+import SignIn from "./pages/SignIn";
+import Signup from "./pages/Signup";
+
 
 
 
@@ -25,6 +32,8 @@ function App() {
   }, []);
 
 
+  const[showheaderfooter,setshowheaderfooter]=useState(true);
+
 
   
   const getCountry = async (url) => {
@@ -41,16 +50,30 @@ function App() {
 
   // Correcting the values object
   const values = {
-    countryList: countryList, // header can access this values
+    countryList: countryList,
+    showheaderfooter,
+    setshowheaderfooter // header can access this values
   };
+  
 
   return (
     <BrowserRouter>
       <MyContext.Provider value={values}>
-        <Header />
+        {
+          showheaderfooter===true &&  <Header />
+        }
+       
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/cat/:id" element={<Listing />} />
+          <Route path="/product/:id" element={<ProductDetails />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/SignIn" element={<SignIn />} />
+          <Route path="/Signup" element={<Signup />} />
         </Routes>
+        {
+          showheaderfooter===true &&  <Footer />
+        }
       </MyContext.Provider>
     </BrowserRouter>
   );
