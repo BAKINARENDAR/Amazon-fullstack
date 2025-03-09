@@ -22,12 +22,9 @@ import secure from "./secure.png";
 import top from "./top.png";
 
 const ProductDetails = () => {
-
   useEffect(() => {
-    window.scrollTo(0, 0);  // This will scroll the page to the top
+    window.scrollTo(0, 0); // This will scroll the page to the top
   }, []);
-
-
 
   const [isopenModal, setisopenModal] = useState(false);
   const closeModal = () => {
@@ -100,23 +97,18 @@ const ProductDetails = () => {
                       onMouseLeave={handleMouseLeave} // Keep submenu visible when hovered
                     >
                       <div className="rating-subinside">
-                      
                         <div className="first-line">
                           <span className="rsi-1">★★★★☆</span>
                           <span className="rsi-2">
                             {reviewsData.overallRating} out of 5
                           </span>
-                         <div className="rating-close">
-            <Button className="close" onClick={closerating}>
-                    <IoMdClose  />
-                  </Button>
-            </div> 
-                       
-                        
+                          <div className="rating-close">
+                            <Button className="close" onClick={closerating}>
+                              <IoMdClose />
+                            </Button>
+                          </div>
                         </div>
-                     
-                     
-                        
+
                         <div className="second-line">
                           <p>{reviewsData.totalRatings} global ratings</p>
                         </div>
@@ -354,7 +346,7 @@ const ProductDetails = () => {
           </div>
         </div>
       </div>
-      <br/>
+      <br />
 
       <RelatedProducts title="Recently viewed products" />
       <RelatedProducts title="Recently viewed products" />
@@ -569,8 +561,7 @@ const ProductDetails = () => {
           </div>
         </div>
       </div>
-    <br/>
-   
+      <br />
     </>
   );
 };

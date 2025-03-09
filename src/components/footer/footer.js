@@ -3,9 +3,6 @@ const Footer =()=>
     return(
         <>
         <footer>
-
-
-
 <div className="footer-signup">
     <div className="footer-signup-content">
         <h2>See personalized recommendations</h2>
