@@ -268,6 +268,7 @@ span {
 }
 .borderpanel {
   border: 1px solid transparent;
+  cursor: pointer;
 }
 .borderpanel:hover {
   border: 1px solid #fff;
@@ -284,49 +285,23 @@ span {
   height: 100vh;
   background-size: cover;
 }
-.swiper-button-next::after,
-.swiper-button-prev::after {
-  color: #11100c;
-  font-weight: 300;
-}
-.swiper-button-next:hover::after,
-.swiper-button-prev:hover::after {
-  border: 3px solid #007185;
-  padding: 1rem;
-  position: fixed;
+.bannerSwiper .swiper-button-next,
+.bannerSwiper .swiper-button-prev {
+  width: 48px;
+  height: 48px;
+  color: #0f1111;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px; /* reduce if arrow still overflows */
 }
 
-.productSwiper {
-  padding: 20px;
-  overflow: hidden;
-  position: relative;
-}
-.product {
-  width: 90%;
-}
-.productSwiper .swiper-button-prev {
-  z-index: 10;
-  background-color: white;
-  width: 60px;
-  height: 100%;
-  top: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  left: 0;
-}
 
-.productSwiper .swiper-button-next {
-  z-index: 10;
-  background-color: white;
-  width: 60px;
-  height: 100%;
-  top: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  right: 0;
-}
+
+
 .box {
   width: 23%;
   height: 400px;
@@ -535,17 +510,7 @@ span {
   white-space: nowrap;
 }
 
-.product-content p {
-  font-size: 0.8rem;
-  color: #2162a1;
-  width: 150px;
-  margin-left: 33px;
-  margin-top: 7px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  letter-spacing: 0.5px;
-}
+
 .product {
   margin: 0;
   padding: 0;
@@ -866,206 +831,91 @@ span {
   margin-top: 5px;
 }
 .listingSwiper {
+ 
   background-color: #ffff;
 
-  height: 200px;
-  padding: 2rem;
-  padding-left: 20px;
-  padding-right: 20px;
-  position: relative;
-  overflow: hidden;
 }
 
-.listingSwiper .swiper-slide:first-child {
-  margin-left: 90px;
-  overflow: hidden;
-}
-
-.listingSwiper .swiper-slide:last-child {
-  margin-right: 90px;
-  overflow: hidden;
-}
-
-.listingSwiper .swiper-slide:last-child {
-  margin-left: 90px;
-}
-.listingSwiper .swiper-button-next {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-  background-color: #ffff;
-  width: 80px;
-  height: 300px;
-  right: 0;
-}
-
-.listingSwiper .swiper-button-prev {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-  background-color: #ffff;
-  width: 80px;
-  height: 300px;
-  left: 0;
-}
 .listingSwiper .swiper-slide {
-  margin-left: 0;
-  margin-right: 0;
+  width: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   box-sizing: border-box;
   position: relative;
-  z-index: 10;
+
 }
-.listing-product-image1 {
-  background-image: url("clothing.png");
+
+.listing-product {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 150px;
   width: 100px;
-  height: 100px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  overflow: hidden;
-  margin-top: 40px;
+  text-align: center;
+  padding: 0 5px;
 }
-.listing-product-image2 {
-  background-image: url("footwear.png");
-  width: 100px;
-  height: 100px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  overflow: hidden;
-  margin-top: 40px;
+
+.listing-product-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 6px;
 }
-.listing-product-image3 {
-  background-image: url("beauty.png");
-  width: 100px;
-  height: 100px;
+
+
+.listing-product-image img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: contain;
   background-size: contain;
-  background-repeat: no-repeat;
-  overflow: hidden;
-  margin-top: 40px;
-}
-.listing-product-image4 {
-  background-image: url("jewellery.png");
-  width: 100px;
-  height: 100px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  overflow: hidden;
-  margin-top: 40px;
-}
-.listing-product-image5 {
-  background-image: url("kids.png");
-  width: 100px;
-  height: 100px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  overflow: hidden;
-  margin-top: 40px;
-}
-.listing-product-image6 {
-  background-image: url("brands.png");
-  width: 100px;
-  height: 100px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  overflow: hidden;
-  margin-top: 40px;
-}
-.listing-product-image7 {
-  background-image: url("grocery.png");
-  width: 100px;
-  height: 100px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  overflow: hidden;
-  margin-top: 40px;
-}
-.listing-product-image8 {
-  background-image: url("sports.png");
-  width: 100px;
-  height: 100px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  overflow: hidden;
-  margin-top: 40px;
-}
-.listing-product-image9 {
-  background-image: url("books.png");
-  width: 100px;
-  height: 100px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  overflow: hidden;
-  margin-top: 40px;
-}
-.listing-product-image10 {
-  background-image: url("car.png");
-  width: 100px;
-  height: 100px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  overflow: hidden;
-  margin-top: 40px;
-}
-.listing-product-image11 {
-  background-image: url("pet.png");
-  width: 100px;
-  height: 100px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  overflow: hidden;
-  margin-top: 40px;
-}
-.listing-product-image12 {
-  background-image: url("videogames.png");
-  width: 100px;
-  height: 100px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  overflow: hidden;
-  margin-top: 40px;
-}
-.listing-product-image13 {
-  background-image: url("musical.png");
-  width: 100px;
-  height: 100px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  overflow: hidden;
-  margin-top: 40px;
-}
-.listing-product-image14 {
-  background-image: url("deals.png");
-  width: 100px;
-  height: 100px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  overflow: hidden;
-  margin-top: 40px;
-}
-.listing-product-image15 {
-  background-image: url("business.png");
-  width: 100px;
-  height: 100px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  overflow: hidden;
-  margin-top: 40px;
-}
-.listing-product-image16 {
-  background-image: url("clothing.png");
-  width: 100px;
-  height: 100px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  overflow: hidden;
-  margin-bottom: 40px;
+  border: 3px solid #f1c40f;
+  background: radial-gradient(circle, #ffe680 0%, #f1c40f 100%);
+  padding: 1px;
+  cursor: pointer;
 }
 
 .listing-product p {
   font-size: 0.85rem;
-  margin-left: 20px;
+  line-height: 1rem;
+  margin: 0;
+  text-align: center;
+  white-space: normal;
+  word-break: break-word;
 }
+
+
+.listingSwiper .swiper-button-next,
+.listingSwiper .swiper-button-prev {
+  width: 40px;
+  height: 40px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.listingSwiper .swiper-button-next::after,
+.listingSwiper .swiper-button-prev::after {
+  font-size: 20px;
+  color: #333;
+}
+
+
+.listing-product-image img:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s ease;
+}
+
+
+
 
 .row1 {
   display: flex;

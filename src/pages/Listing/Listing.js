@@ -6,187 +6,55 @@ import "swiper/css/pagination"; // Pagination module styles
 import { Autoplay, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import Sidebar from "../../components/Sidebar/Sidebar";
+import { fetchDataFromApi } from "../../utils/api";
 
 const Listing = () => {
   const [selectedcolor, setselectedcolor] = useState("#2b3a53");
+  const [categories, setCategories] = useState([]);
 
   const handlecolorchange = (color) => {
     setselectedcolor(color.hex);
   };
 
-   useEffect(() => {
-      window.scrollTo(0, 0);  // This will scroll the page to the top
-    }, []);
+  useEffect(() => {
+    const getCategories = async () => {
+      try {
+        const res = await fetchDataFromApi("/api/category");
+        console.log("API response:", res); // Optional: to verify structure
+        setCategories(res?.categoryList || []);
+      } catch (err) {
+        console.error("Error fetching categories:", err);
+      }
+    };
+    getCategories();
+  }, []);
 
-  const colors = ["#2b3a53", "#98b2ba", "#878b8c",];
+  const colors = ["#2b3a53", "#98b2ba", "#878b8c"];
   return (
     <>
       <Swiper
-        slidesPerView={10}
-        spaceBetween={0}
+        slidesPerView={5}
+        spaceBetween={10}
         navigation={true}
-        slidesOffsetBefore={20}
-        slidesOffsetAfter={20}
         pagination={{ clickable: true }}
         modules={[Navigation, Autoplay]}
         className="listingSwiper"
       >
-        <SwiperSlide>
-          <div className="listing-product">
-            <div className="listing-product-content">
-              <div className="listing-product-image1"></div>
-              <p>Clothing</p>
+        {categories.map((category, index) => (
+          <SwiperSlide key={category._id}>
+            <div className="listing-product">
+              <div className="listing-product-content">
+                <div className="listing-product-image">
+                  <img
+                    src={category.images?.[0] || "/fallback.jpg"}
+                    alt={category.name}
+                  />
+                </div>
+                <p>{category.name}</p>
+              </div>
             </div>
-          </div>
-        </SwiperSlide>
-
-        <SwiperSlide>
-          <div className="listing-product">
-            <div className="listing-product-content">
-              <div className="listing-product-image2"></div>
-              <p>Footwear</p>
-            </div>
-          </div>
-        </SwiperSlide>
-
-        <SwiperSlide>
-          <div className="listing-product">
-            <div className="listing-product-content">
-              <div className="listing-product-image3"></div>
-              <p>Beauty&</p>
-              <p>Makeup</p>
-            </div>
-          </div>
-        </SwiperSlide>
-
-        <SwiperSlide>
-          <div className="listing-product">
-            <div className="listing-product-content">
-              <div className="listing-product-image4"></div>
-              <p>Jewellery</p>
-              <p>Luggage,</p>
-              <p>Watches</p>
-            </div>
-          </div>
-        </SwiperSlide>
-
-        <SwiperSlide>
-          <div className="listing-product">
-            <div className="listing-product-content">
-              <div className="listing-product-image5"></div>
-              <p>Kids & baby</p>
-            </div>
-          </div>
-        </SwiperSlide>
-
-        <SwiperSlide>
-          <div className="listing-product">
-            <div className="listing-product-content">
-              <div className="listing-product-image6"></div>
-              <p>Amazon</p>
-              <p>Brands&</p>
-              <p>More</p>
-            </div>
-          </div>
-        </SwiperSlide>
-
-        <SwiperSlide>
-          <div className="listing-product">
-            <div className="listing-product-content">
-              <div className="listing-product-image7"></div>
-              <p>Grocery</p>
-            </div>
-          </div>
-        </SwiperSlide>
-
-        <SwiperSlide>
-          <div className="listing-product">
-            <div className="listing-product-content">
-              <div className="listing-product-image8"></div>
-              <p>Sports &</p>
-              <p>Fitness</p>
-            </div>
-          </div>
-        </SwiperSlide>
-
-        <SwiperSlide>
-          <div className="listing-product">
-            <div className="listing-product-content">
-              <div className="listing-product-image9"></div>
-              <p>Books &</p>
-              <p>Stationary</p>
-            </div>
-          </div>
-        </SwiperSlide>
-
-        <SwiperSlide>
-          <div className="listing-product">
-            <div className="listing-product-content">
-              <div className="listing-product-image10"></div>
-              <p>Car &</p>
-              <p>motorbike</p>
-              <p>accessories</p>
-            </div>
-          </div>
-        </SwiperSlide>
-
-        <SwiperSlide>
-          <div className="listing-product">
-            <div className="listing-product-content">
-              <div className="listing-product-image11"></div>
-              <p>Pet Supplies</p>
-            </div>
-          </div>
-        </SwiperSlide>
-
-        <SwiperSlide>
-          <div className="listing-product">
-            <div className="listing-product-content">
-              <div className="listing-product-image12"></div>
-              <p>Video Games</p>
-              <p>& Software</p>
-            </div>
-          </div>
-        </SwiperSlide>
-
-        <SwiperSlide>
-          <div className="listing-product">
-            <div className="listing-product-content">
-              <div className="listing-product-image13"></div>
-              <p>Muscical </p>
-              <p>Instruments</p>
-            </div>
-          </div>
-        </SwiperSlide>
-
-        <SwiperSlide>
-          <div className="listing-product">
-            <div className="listing-product-content">
-              <div className="listing-product-image14"></div>
-              <p>Deal of the</p>
-              <p>Day</p>
-            </div>
-          </div>
-        </SwiperSlide>
-
-        <SwiperSlide>
-          <div className="listing-product">
-            <div className="listing-product-content">
-              <div className="listing-product-image15"></div>
-              <p>Amazon</p>
-              <p>Business</p>
-            </div>
-          </div>
-        </SwiperSlide>
-
-        <SwiperSlide>
-          <div className="listing-product">
-            <div className="listing-product-content">
-              <div className="listing-product-image16"></div>
-              <p>Clothing</p>
-            </div>
-          </div>
-        </SwiperSlide>
+          </SwiperSlide>
+        ))}
       </Swiper>
 
       <section className="product-listing-page">
@@ -210,7 +78,7 @@ const Listing = () => {
                       <p>Prime Edition (Blue Topaz,6.. </p>
                     </div>
                     <div className="color-picker">
-                    <Circle
+                      <Circle
                         color={selectedcolor}
                         onChange={handlecolorchange}
                         colors={colors}

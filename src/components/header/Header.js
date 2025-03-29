@@ -1,13 +1,12 @@
 import Dialog from "@mui/material/Dialog";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { FaSearch, FaShoppingCart } from "react-icons/fa";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { IoMdArrowDropdown, IoMdArrowDropup, IoMdClose } from "react-icons/io";
-import { IoMenu } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import { MyContext } from "../../App";
-
+import { fetchDataFromApi } from "../../utils/api";
 const Header = () => {
   const [isopenModal, setisopenModal] = useState(false);
   const closeModal = () => {
@@ -17,32 +16,47 @@ const Header = () => {
   const openModal = () => {
     setisopenModal(true);
   };
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const getCategories = async () => {
+      try {
+        const res = await fetchDataFromApi("/api/category");
+        console.log("API response:", res); // Optional: to verify structure
+        setCategories(res?.categoryList || []);
+      } catch (err) {
+        console.error("Error fetching categories:", err);
+      }
+    };
+    getCategories();
+  }, []);
+
   const context = useContext(MyContext);
   const [Selectedcountry, setSelectedcountry] = useState("India");
 
   const [selectLanguage, setselectLangauage] = useState("EN");
-  const [showLanguagemenu,setshowLanguagemenu]=useState(false);
+  const [showLanguagemenu, setshowLanguagemenu] = useState(false);
 
-  const handlelangmenu=(e)=>{
+  const handlelangmenu = (e) => {
     setselectLangauage(e.target.value);
     setshowLanguagemenu(false);
-  }
+  };
 
-  const handlemouseenter=()=>{
+  const handlemouseenter = () => {
     setshowLanguagemenu(true);
-  }
-  const handlemouseclose =()=>{
+  };
+  const handlemouseclose = () => {
     setshowLanguagemenu(false);
-  }
+  };
 
   return (
     <>
       <header>
         <div className="navbar">
-          <Link to='/'>
-          <div className="nav-logo border " >
-            <div className="logo"></div>
-          </div>
+          <Link to="/">
+            <div className="nav-logo border ">
+              <div className="logo"></div>
+            </div>
           </Link>
 
           <div className="nav-address border">
@@ -139,40 +153,99 @@ const Header = () => {
             </div>
           </div>
 
-          <div className="nav-country border" onMouseEnter={handlemouseenter} onMouseLeave={handlemouseclose}>
+          <div
+            className="nav-country border"
+            onMouseEnter={handlemouseenter}
+            onMouseLeave={handlemouseclose}
+          >
             <div className="country-logo"></div>
             <p className="second-add">{selectLanguage} </p>
-            <IoMdArrowDropdown className="down-arrow"/>
-{ showLanguagemenu && (
-            <div className="submenu">
-              <IoMdArrowDropup className="submenu-arrowup" />
-              <label>
-                <input type="radio" name="language" value="EN" checked={selectLanguage === "EN"} onChange={handlelangmenu} />{" "}
-                English - EN
-              </label>
-              <label>
-                <input type="radio" name="language" value="HI" checked={selectLanguage === "HI"} onChange={handlelangmenu}  /> हिंदी - HI
-              </label>
-              <label>
-                <input type="radio" name="language" value="TA" checked={selectLanguage === "TA"} onChange={handlelangmenu} /> தமிழ் - TA
-              </label>
-              <label>
-                <input type="radio" name="language" value="TE" checked={selectLanguage === "TE"} onChange={handlelangmenu} /> తెలుగు - TE
-              </label>
-              <label>
-                <input type="radio" name="language" value="KN" checked={selectLanguage === "KN"} onChange={handlelangmenu }/> ಕನ್ನಡ - KN
-              </label>
-              <label>
-                <input type="radio" name="language" value="ML" checked={selectLanguage === "ML"} onChange={handlelangmenu }/> മലയാളം - ML
-              </label>
-              <label>
-                <input type="radio" name="language" value="BN" checked={selectLanguage === "BN"} onChange={handlelangmenu }/> বাংলা - BN
-              </label>
-              <label>
-                <input type="radio" name="language" value="MR"  checked={selectLanguage === "MR"} onChange={handlelangmenu }/> मराठी - MR
-              </label>
-            </div>
-                )}
+            <IoMdArrowDropdown className="down-arrow" />
+            {showLanguagemenu && (
+              <div className="submenu">
+                <IoMdArrowDropup className="submenu-arrowup" />
+                <label>
+                  <input
+                    type="radio"
+                    name="language"
+                    value="EN"
+                    checked={selectLanguage === "EN"}
+                    onChange={handlelangmenu}
+                  />{" "}
+                  English - EN
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name="language"
+                    value="HI"
+                    checked={selectLanguage === "HI"}
+                    onChange={handlelangmenu}
+                  />{" "}
+                  हिंदी - HI
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name="language"
+                    value="TA"
+                    checked={selectLanguage === "TA"}
+                    onChange={handlelangmenu}
+                  />{" "}
+                  தமிழ் - TA
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name="language"
+                    value="TE"
+                    checked={selectLanguage === "TE"}
+                    onChange={handlelangmenu}
+                  />{" "}
+                  తెలుగు - TE
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name="language"
+                    value="KN"
+                    checked={selectLanguage === "KN"}
+                    onChange={handlelangmenu}
+                  />{" "}
+                  ಕನ್ನಡ - KN
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name="language"
+                    value="ML"
+                    checked={selectLanguage === "ML"}
+                    onChange={handlelangmenu}
+                  />{" "}
+                  മലയാളം - ML
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name="language"
+                    value="BN"
+                    checked={selectLanguage === "BN"}
+                    onChange={handlelangmenu}
+                  />{" "}
+                  বাংলা - BN
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name="language"
+                    value="MR"
+                    checked={selectLanguage === "MR"}
+                    onChange={handlelangmenu}
+                  />{" "}
+                  मराठी - MR
+                </label>
+              </div>
+            )}
           </div>
 
           <div class="nav-signin border">
@@ -187,7 +260,10 @@ const Header = () => {
               <IoMdArrowDropup className="nav-submenu-arrowup" />
               <label>
                 <div className="submenu-signin">
-                 <Link to='/SignIn'> <button>Sign in</button></Link>
+                  <Link to="/SignIn">
+                    {" "}
+                    <button>Sign in</button>
+                  </Link>
                   <p>New customer?Start here.</p>
                 </div>
               </label>
@@ -201,34 +277,30 @@ const Header = () => {
             <p class="nav-second">& Orders</p>
           </div>
 
-         <Link to='/cart'>
-          <div class="nav-cart border">
-            <FaShoppingCart className="cart-icon" />
-            <div />
-            <p className="cart">Cart</p>
-          </div>
+          <Link to="/cart">
+            <div class="nav-cart border">
+              <FaShoppingCart className="cart-icon" />
+              <div />
+              <p className="cart">Cart</p>
+            </div>
           </Link>
-
         </div>
 
         <div className="panel">
           <div className="panel-options">
-            <div className="panel-all borderpanel">
-              <IoMenu />
-              All
-            </div>
-            <p className="borderpanel">Fresh</p>
-            <p className="borderpanel">MX Player</p>
-            <p className="borderpanel">Sell</p>
-            <p className="borderpanel">Best Sellers</p>
-            <p className="borderpanel">Today's Deals</p>
-            <p className="borderpanel">Mobiles</p>
-            <p className="borderpanel">Customer Service</p>
-            <p className="borderpanel">Prime</p>
-            <p className="borderpanel">Electronics</p>
-            <p className="borderpanel">Home & Kitchen</p>
-            <p className="borderpanel">Amazon Pay</p>
-            <p className="borderpanel">New Releases</p>
+            <div className="panel-all borderpanel"></div>
+            <Link
+              to="/cat/:id"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <p className="borderpanel">Today's Deals</p>
+            </Link>
+
+            {categories.map((cat, index) => (
+              <p key={index} className="borderpanel">
+                {cat.name}
+              </p>
+            ))}
           </div>
         </div>
       </header>
