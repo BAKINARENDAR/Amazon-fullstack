@@ -1,24 +1,36 @@
-import { useContext, useEffect } from "react";
+import Rating from "@mui/material/Rating";
+import { useContext, useEffect, useState } from "react";
 import "swiper/css"; // Swiper core styles
 import "swiper/css/navigation"; // Navigation module styles
 import "swiper/css/pagination"; // Pagination module styles
 import { Autoplay, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { MyContext } from "../../App";
+import { fetchDataFromApi } from "../../utils/api";
 import hero1 from "./hero1.jpg";
 import hero2 from "./hero2.jpg";
 import hero3 from "./hero3.jpg";
 import hero5 from "./hero5.jpg";
 import hero6 from "./hero6.jpg";
-import product from "./product.jpg";
 const Home = () => {
   const context = useContext(MyContext);
+  const [products, setProducts] = useState([]);
+
   useEffect(() => {
-    // Set header and footer visibility to true when we visit the homepage
     context.setshowheaderfooter(true);
+
+    const fetchProducts = async () => {
+      try {
+        const res = await fetchDataFromApi("/api/product");
+        console.log("API response:", res); // Optional: to verify structure
+        setProducts(res);
+      } catch (err) {
+        console.error("Error fetching categories:", err);
+      }
+    };
+
+    fetchProducts();
   }, [context]);
-
-
 
   return (
     <>
@@ -76,7 +88,7 @@ const Home = () => {
 
         <div className="box1 box">
           <div className="box-content">
-          <h2>Customers’ Most-Loved products</h2>
+            <h2>Customers’ Most-Loved products</h2>
             <div className="box4-image"></div>
             <p>See more</p>
           </div>
@@ -89,31 +101,64 @@ const Home = () => {
         </div>
 
         <Swiper
-        slidesPerView={5}
-        spaceBetween={10}
-        navigation={true}
-        pagination={{ clickable: true }}
-        modules={[Navigation, Autoplay]}
-        className="productSwiper"
-      >
-      
-          <SwiperSlide >
-            <div className="product">
-              <div className="product-content">
-                <div className="product-image">
-                  <img
-                    src={product}
-                    alt=""
-                  />
+          slidesPerView={5}
+          spaceBetween={10}
+          navigation={true}
+          pagination={{ clickable: true }}
+          modules={[Navigation, Autoplay]}
+          className="productSwiper"
+        >
+          {products.length > 0 ? (
+            products.map((product, index) => (
+              <SwiperSlide key={index}>
+                <div className="product">
+                  <div className="product-content">
+                    <div className="product-image">
+                    {product.images?.length > 0 ? (
+                            <img
+                              src={product.images[0]}
+                              alt="Product"
+                              width={150}
+                              height={160}
+                            />
+                          ) : (
+                            <span>No Image</span>
+                          )}
+                    </div>
+                    <div className="pdt-name">
+                      <p>{product.name}</p>
+                    </div>
+                    <div className="rating">
+                      <Rating
+                        name="read-only"
+                        value={product.rating}
+                        readOnly
+                      />
+                    </div>
+                    <div className="featured">
+                      <div className="badge">
+                      <span className="discount">
+      {product.Regularprice && product.Discountedprice
+        ? `${((product.Regularprice - product.Discountedprice) / product.Regularprice * 100).toFixed(0)}% off`
+        : "No discount"}
+    </span>
+                        <span className="deal">Limited time deal</span>
+                      </div>
+                      <div className="pdt-price">
+                        <span className="current-price">₹{product.Discountedprice}</span>
+                        <span className="original-price">
+                          M.R.P: <del>₹{product.Regularprice}</del>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <p></p>
-              </div>
-            </div>
-          </SwiperSlide>
-   
-      </Swiper>
-      
-
+              </SwiperSlide>
+            ))
+          ) : (
+            <p>Loading products...</p> // Show loading while fetching
+          )}
+        </Swiper>
         <div className="box1 box">
           <div className="box-content">
             <h2>Up to 75% off | Wall arts, painting, decor & more...</h2>

@@ -501,8 +501,35 @@ span {
 .productSwiper {
   background-color: #ffff;
   width: 100%;
-  height: 470px;
+  height: 400px;
   padding: 2rem;
+}
+.productSwiper .swiper-slide {
+  width: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  position: relative;
+
+}
+.productSwiper .swiper-button-next,
+.productSwiper .swiper-button-prev {
+  width: 40px;
+  height: 40px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.productSwiper .swiper-button-next::after,
+.productSwiper .swiper-button-prev::after {
+  font-size: 20px;
+  color: #333;
 }
 .product h3 {
   font-size: 1.2rem;
@@ -510,7 +537,18 @@ span {
   white-space: nowrap;
 }
 
-
+.pdt-name{
+  color: #3e71a7;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 150px;
+  font-size: 0.85rem;
+  margin-left: 40px;
+  margin-top: 10px;
+}
 .product {
   margin: 0;
   padding: 0;
@@ -519,13 +557,16 @@ span {
 }
 
 .product-image {
-  background-image: url("box9_image.jpg");
+ 
   width: 150px;
-  height: 170px;
+  height: 160px;
   margin-left: 2rem;
-  margin-top: 12px;
   background-size: cover;
   cursor: pointer;
+}
+.product-content .rating{
+  margin-left: 40px;
+  font-size: 0.7rem;
 }
 .rating-container {
   margin-left: 28px;
@@ -546,7 +587,13 @@ span {
 }
 .rating .MuiRating-iconFilled {
   color: #de7921;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
+  margin-right: 3px;
+  margin-top: 5px;
+}
+.rating .MuiRating-iconEmpty {
+  font-size: 1.1rem !important; 
+  margin-top: 5px;
 }
 
 .rating .MuiRating-iconEmpty {
@@ -587,24 +634,47 @@ span {
 .product-heading p {
   font-size: 1.1rem;
 }
-.badge-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 0.6rem;
+.featured{
+margin-top: 2px;
+  margin-left: 20px;
 }
+
 .badge .discount {
   background-color: #cc0c39;
-  padding: 0.3rem;
+font-size: 0.8rem;
   margin-left: 10px;
   border-radius: 3px;
   margin-top: 30px;
+  font-family: sans-serif;
+  padding: 3px;
 }
 .badge .deal {
   color: #cc0c39;
   margin-left: 10px;
   font-weight: 750;
 }
+
+.pdt-price {
+  display: flex;
+  flex-direction: column; /* Stack the prices vertically */
+  margin-top: 8px;
+  font-family: 'Arial', sans-serif; /* Use a clean and modern font */
+ 
+  margin-left: 14px;
+}
+
+.pdt-price .current-price {
+  font-size: 1rem; 
+  font-weight: 250;
+  color: #0f1111; 
+  margin-bottom: 5px; 
+}
+
+.pdt-price .original-price {
+  font-size: 0.7rem;
+  color: #1e1c1c;
+}
+
 .footer-panel1-content {
   background-color: #37475a;
   color: #fff;
