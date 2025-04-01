@@ -1013,15 +1013,58 @@ font-size: 0.8rem;
   background-color: #f4f4f4;
   scroll-behavior: smooth;
 }
-.color-picker {
-  margin-top: 10px;
-  display: flex;
+.color{
+color: #37475a;
+font-size: 1rem;
+}
+.pdt-size-ram span{
+  color: #37475a;
+  font-size: 0.8rem;
 
-  z-index: 10;
+
 }
-.color-picker .circle-edit {
-  transform: scale(70%);
+.pdt-size-ram {
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
+
+.size-options {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.size-option {
+  padding: 10px 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: white;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.size-option.selected {
+  border: 2px solid #2162a1;
+  background-color: #e6f0ff;
+}
+.pdtdetails-current-price{
+  font-size: 2rem; 
+  font-weight: 250;
+  color: #0f1111; 
+  margin-bottom: 5px;
+}
+.pdtdetails-original-price{
+  font-size: 0.8rem;
+  color: #1e1c1c;
+}
+.pdtdetails-price{
+  display: flex;
+  flex-direction: column; /* Stack the prices vertically */
+  margin-top:20px;
+  
+  font-family: 'Arial', sans-serif; 
+}
+
 .details-sidebar {
   background-color: #ffff;
   width: 45%;

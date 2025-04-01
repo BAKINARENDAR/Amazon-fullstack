@@ -12,6 +12,7 @@ import { Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { MyContext } from "../../App";
 import ProductsZoom from "../../components/ProductsZoom";
+import { fetchDataFromApi } from "../../utils/api";
 import amzon from "./amzon.png";
 import cash from "./cash.png";
 import free from "./free.png";
@@ -22,7 +23,19 @@ import secure from "./secure.png";
 import top from "./top.png";
 
 const ProductDetails = () => {
+  const [products, setProducts] = useState([]);
   useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetchDataFromApi("/api/product");
+        console.log("API response:", res); // Optional: to verify structure
+        setProducts(res);
+      } catch (err) {
+        console.error("Error fetching categories:", err);
+      }
+    };
+
+    fetchProducts();
     window.scrollTo(0, 0); // This will scroll the page to the top
   }, []);
 
@@ -63,287 +76,311 @@ const ProductDetails = () => {
   const closerating = () => {
     setshowrating(false); // Close the modal
   };
+  const [selectedSize, setSelectedSize] = useState("8GB+256GB"); // Default selected option
+
+  const options = ["8GB+256GB", "12GB+256GB"];
 
   return (
     <>
       <div className="product-details-page">
         <div className="details-container">
-          <div className="details-list">
-            <ProductsZoom />
-            <div className="details-content-right">
-              <div className="details1">
-                <h1>
-                  Kuber Industries Design 6 Pieces PVC PVC 6 Piece Dining Table
-                  Placemat Set,White, Standard (Hs_37_Kubmart020139, Polyvinyl
-                  Chloride)
-                </h1>
-                <p>Visit the Kuber Industries Store</p>
-                <div className="rating-container">
-                  <Rating
-                    className="rating"
-                    name="read-only"
-                    value={5}
-                    readOnly
-                  />
-                  <IoIosArrowDown
-                    className="rating-down"
-                    onMouseEnter={handleMouseEnter}
-                    onMouseLeave={handleMouseLeave}
-                  />
-                  {showrating && (
-                    <div
-                      className="rating-submenu"
-                      onMouseEnter={handleMouseEnter}
-                      onMouseLeave={handleMouseLeave} // Keep submenu visible when hovered
-                    >
-                      <div className="rating-subinside">
-                        <div className="first-line">
-                          <span className="rsi-1">★★★★☆</span>
-                          <span className="rsi-2">
-                            {reviewsData.overallRating} out of 5
-                          </span>
-                          <div className="rating-close">
-                            <Button className="close" onClick={closerating}>
-                              <IoMdClose />
-                            </Button>
-                          </div>
-                        </div>
+          {products.length > 0 ? (
+            products.map((product, index) => (
+              <div className="details-list" key={index}>
+                <ProductsZoom />
+                <div className="details-content-right">
+                  <div className="details1">
+                    <h1>
+                      <h1>{product.name || "Product Name"}</h1>
+                    </h1>
 
-                        <div className="second-line">
-                          <p>{reviewsData.totalRatings} global ratings</p>
-                        </div>
-                        <div className="third-line">
-                          {reviewsData.ratingsbreakdown.map((item) => (
-                            <div className="tl-rating-row" key={item.stars}>
-                              <span>{item.stars} star</span>
-                              <div className="progress-bar">
-                                <div
-                                  className="progress-fill"
-                                  style={{ width: `${item.percentage}%` }}
-                                ></div>
-                              </div>
-                              <span>{item.percentage}%</span>
-                            </div>
-                          ))}
-                        </div>
-                        <div className="see-creview">
-                          <span>See Customer reviews</span>
-                        </div>
+                    <div className="rating-container">
+                      <Rating
+                        className="rating"
+                        name="read-only"
+                        value={product.rating}
+                        readOnly
+                      />
+                    </div>
+
+                    <div className="rating-views">
+                      <h4>600+ bought in past month</h4>
+                    </div>
+
+                    <div className="badge-container">
+                      <div className="badge">
+                        <span className="discount">
+                          {product.Regularprice && product.Discountedprice
+                            ? `${(
+                                ((product.Regularprice -
+                                  product.Discountedprice) /
+                                  product.Regularprice) *
+                                100
+                              ).toFixed(0)}% off`
+                            : "No discount"}
+                        </span>
+                        <span className="deal">Limited time deal</span>
                       </div>
                     </div>
-                  )}
-                </div>
 
-                <div className="rating-views">
-                  <h4>600+ bought in past month</h4>
-                </div>
+                    <div className="pdtdetails-price">
+                      <span className="pdtdetails-current-price">
+                        ₹{product.Discountedprice}
+                      </span>
+                      <span className="pdtdetails-original-price">
+                        M.R.P: <del>₹{product.Regularprice}</del>
+                      </span>
+                    </div>
+                    <div className="fulfilled">
+                      <img src={fulfilled} alt="fulfilled-image" />
+                      <p>Inclusive of all taxes</p>
+                    </div>
+                    <div className="mini-product-delivery">
+                      <Swiper
+                        modules={[Navigation]}
+                        slidesPerView={5}
+                        spaceBetween={0}
+                        navigation
+                        className="miniSwiper"
+                      >
+                        <SwiperSlide>
+                          <div className="first-mini">
+                            <img src={cash} alt="first-mini" />
+                          </div>
+                        </SwiperSlide>
+                        <SwiperSlide>
+                          <div className="first-mini">
+                            <img src={ret} alt="first-mini" />
+                          </div>
+                        </SwiperSlide>
+                        <SwiperSlide>
+                          <div className="first-mini">
+                            <img src={amzon} alt="first-mini" />
+                          </div>
+                        </SwiperSlide>
+                        <SwiperSlide>
+                          <div className="first-mini">
+                            <img src={free} alt="first-mini" />
+                          </div>
+                        </SwiperSlide>
+                        <SwiperSlide>
+                          <div className="first-mini">
+                            <img src={top} alt="first-mini" />
+                          </div>
+                        </SwiperSlide>
+                        <SwiperSlide>
+                          <div className="first-mini">
+                            <img src={secure} alt="first-mini" />
+                          </div>
+                        </SwiperSlide>
+                      </Swiper>
+                    </div>
+                    <div className="pdt-color">
+                      <span className="color">
+                        Color: <strong>{product.color}</strong>
+                      </span>
+                    </div>
+                    <div className="pdt-size-ram">
+                      <span>Size: {selectedSize}</span>
+                      <div className="size-options">
+                        {product.variants && product.variants.length > 0 ? (
+                          product.variants.map((variant, index) => {
+                            // Clean up the variant to remove brackets and quotes
+                            let cleanedVariant = variant;
+                            if (typeof variant === "string") {
+                              // If it's a stringified array like '["1L"]', parse it and take the first element
+                              if (
+                                variant.startsWith("[") &&
+                                variant.endsWith("]")
+                              ) {
+                                try {
+                                  cleanedVariant = JSON.parse(variant)[0];
+                                } catch (e) {
+                                  cleanedVariant = variant.replace(
+                                    /[\[\]"]+/g,
+                                    ""
+                                  ); // Fallback: strip brackets and quotes
+                                }
+                              } else {
+                                cleanedVariant = variant; // Already a string like "1L"
+                              }
+                            }
 
-                <div className="badge-container">
-                  <div className="badge">
-                    <span className="discount">Limited time deal</span>
-                  </div>
-                </div>
-
-                <div className="info">
-                  <p>-13%</p>
-                  <h4> ₹174</h4>
-                  <h3>(₹29/count)</h3>
-                </div>
-                <div className="mrp">M.R.P.: ₹199 </div>
-                <div className="fulfilled">
-                  <img src={fulfilled} alt="fulfilled-image" />
-                  <p>Inclusive of all taxes</p>
-                </div>
-                <div className="mini-product-delivery">
-                  <Swiper
-                    modules={[Navigation]}
-                    slidesPerView={5}
-                    spaceBetween={0}
-                    navigation
-                    className="miniSwiper"
-                  >
-                    <SwiperSlide>
-                      <div className="first-mini">
-                        <img src={cash} alt="first-mini" />
-                      </div>
-                    </SwiperSlide>
-                    <SwiperSlide>
-                      <div className="first-mini">
-                        <img src={ret} alt="first-mini" />
-                      </div>
-                    </SwiperSlide>
-                    <SwiperSlide>
-                      <div className="first-mini">
-                        <img src={amzon} alt="first-mini" />
-                      </div>
-                    </SwiperSlide>
-                    <SwiperSlide>
-                      <div className="first-mini">
-                        <img src={free} alt="first-mini" />
-                      </div>
-                    </SwiperSlide>
-                    <SwiperSlide>
-                      <div className="first-mini">
-                        <img src={top} alt="first-mini" />
-                      </div>
-                    </SwiperSlide>
-                    <SwiperSlide>
-                      <div className="first-mini">
-                        <img src={secure} alt="first-mini" />
-                      </div>
-                    </SwiperSlide>
-                  </Swiper>
-                </div>
-
-                <div className="about-product">
-                  <h2>About this item</h2>
-                  <ul>
-                    <li>
-                      ✅ Package Contains - (6 Pcs) Dining Table Food
-                      Mats/Placemats | Color - Marble Print - Cream & Gold |
-                      Material - PVC | Product Dimensions - 46x32x1 cm
-                    </li>
-                    <li>
-                      ✅ Safe use on any surface - This dining table mats pieces
-                      set protects your table from spills because it is made
-                      from durable materials that resist stains
-                    </li>
-                    <li>
-                      ✅ Long-lasting and durable - Our food mat for dining is
-                      designed to be reusable so it provides a cost-effective
-                      solution while maintaining its quality over time
-                    </li>
-                    <li>
-                      ✅ Perfect for Everyday Use - Our dining table mat are
-                      designed for daily use, so you can protect your dining
-                      table every day while maintaining a neat and tidy
-                      appearance.
-                    </li>
-                    <li>
-                      ✅ Easy maintenance with washable material - This dining
-                      table plate mat features a washable design that allows
-                      quick cleaning after every use because it is crafted to be
-                      reusable for everyday dining.
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              <div className="details2">
-                <div className="info">
-                  <h4> ₹174</h4>
-                </div>
-                <div className="fulfilled">
-                  <img src={fulfilled} alt="fulfilled-image" />
-                </div>
-                <div className="d2-delivery">
-                  <h3>
-                    <span>FREE delivery</span>Sunday,19
-                  </h3>
-                  <p>
-                    <strong>January</strong> on your first order.
-                  </p>
-                  <h4>
-                    <span>Details</span>
-                  </h4>
-                </div>
-
-                <div className="d2-delivery2">
-                  <p>
-                    Or fastest delivery <strong>Tomorrow</strong>,
-                  </p>
-                  <p>
-                    <strong> January.</strong>
-                  </p>
-                </div>
-
-                <div className="d2-address">
-                  <div className="d2-first">
-                    <HiOutlineLocationMarker />
-                    <p>Delivering to {Selectedcountry}</p>
-                  </div>
-                  <div className="d2-second">
-                    <p onClick={openModal}>Update Location</p>
-                  </div>
-                  <Dialog open={isopenModal} onClose={closeModal}>
-                    <div className="locationModal">
-                      <div className="locationh2">
-                        <h3>Choose your location</h3>
-                        <Button className="close" onClick={closeModal}>
-                          <IoMdClose />{" "}
-                        </Button>
-                      </div>
-                      <div className="location-p">
-                        <p>
-                          Select a delivery location to see product availability
-                          and delivery options
-                        </p>
-                      </div>
-                      <div>
-                        <input
-                          type="text"
-                          placeholder="Search location"
-                          className="search-location"
-                        />
-                        <button className="search ">
-                          <FaSearch />
-                        </button>
-                      </div>
-
-                      <ul className="countryList">
-                        {context.countryList?.length !== 0 &&
-                          context.countryList?.map((item, index) => {
                             return (
-                              <li key={index}>
-                                <Button
-                                  onClick={() => {
-                                    setSelectedcountry(item.country);
-                                    closeModal();
-                                  }}
-                                >
-                                  {item.country}{" "}
-                                </Button>
-                              </li>
+                              <Button
+                                key={index}
+                                className={`size-option ${
+                                  selectedSize === cleanedVariant
+                                    ? "selected"
+                                    : ""
+                                }`}
+                                onClick={() => setSelectedSize(cleanedVariant)}
+                              >
+                                {cleanedVariant}
+                              </Button>
                             );
-                          })}
+                          })
+                        ) : (
+                          <span>No variants available</span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="about-product">
+                      <h2>About this item</h2>
+                      <ul>
+                        <li>
+                          ✅ Package Contains - (6 Pcs) Dining Table Food
+                          Mats/Placemats | Color - Marble Print - Cream & Gold |
+                          Material - PVC | Product Dimensions - 46x32x1 cm
+                        </li>
+                        <li>
+                          ✅ Safe use on any surface - This dining table mats
+                          pieces set protects your table from spills because it
+                          is made from durable materials that resist stains
+                        </li>
+                        <li>
+                          ✅ Long-lasting and durable - Our food mat for dining
+                          is designed to be reusable so it provides a
+                          cost-effective solution while maintaining its quality
+                          over time
+                        </li>
+                        <li>
+                          ✅ Perfect for Everyday Use - Our dining table mat are
+                          designed for daily use, so you can protect your dining
+                          table every day while maintaining a neat and tidy
+                          appearance.
+                        </li>
+                        <li>
+                          ✅ Easy maintenance with washable material - This
+                          dining table plate mat features a washable design that
+                          allows quick cleaning after every use because it is
+                          crafted to be reusable for everyday dining.
+                        </li>
                       </ul>
                     </div>
-                  </Dialog>
-                </div>
+                  </div>
 
-                <div className="d2-stock">
-                  <p>In stock</p>
-                </div>
+                  <div className="details2">
+                    <div className="info">
+                      <h4> ₹174</h4>
+                    </div>
+                    <div className="fulfilled">
+                      <img src={fulfilled} alt="fulfilled-image" />
+                    </div>
+                    <div className="d2-delivery">
+                      <h3>
+                        <span>FREE delivery</span>Sunday,19
+                      </h3>
+                      <p>
+                        <strong>January</strong> on your first order.
+                      </p>
+                      <h4>
+                        <span>Details</span>
+                      </h4>
+                    </div>
 
-                <div className="d2-quantity">
-                  <select
-                    value={quantity}
-                    onChange={handleChange}
-                    className="d2-dropdown"
-                  >
-                    {[1, 2, 3, 4, 5].map((num) => (
-                      <option key={num} value={num}>
-                        {num}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="d2-buying">
-                  <button className="first-button">Add to cart</button>
-                  <button className="second-button">Buy Now</button>
-                </div>
+                    <div className="d2-delivery2">
+                      <p>
+                        Or fastest delivery <strong>Tomorrow</strong>,
+                      </p>
+                      <p>
+                        <strong> January.</strong>
+                      </p>
+                    </div>
 
-                <div className="d2-gift">
-                  <input className="d2-gift-check" type="checkbox" />
-                  <p>Add gift options</p>
-                </div>
+                    <div className="d2-address">
+                      <div className="d2-first">
+                        <HiOutlineLocationMarker />
+                        <p>Delivering to {Selectedcountry}</p>
+                      </div>
+                      <div className="d2-second">
+                        <p onClick={openModal}>Update Location</p>
+                      </div>
+                      <Dialog open={isopenModal} onClose={closeModal}>
+                        <div className="locationModal">
+                          <div className="locationh2">
+                            <h3>Choose your location</h3>
+                            <Button className="close" onClick={closeModal}>
+                              <IoMdClose />{" "}
+                            </Button>
+                          </div>
+                          <div className="location-p">
+                            <p>
+                              Select a delivery location to see product
+                              availability and delivery options
+                            </p>
+                          </div>
+                          <div>
+                            <input
+                              type="text"
+                              placeholder="Search location"
+                              className="search-location"
+                            />
+                            <button className="search ">
+                              <FaSearch />
+                            </button>
+                          </div>
 
-                <div className="d2-wish-list">
-                  <button className="d2-wish-button">Add to Wish List</button>
+                          <ul className="countryList">
+                            {context.countryList?.length !== 0 &&
+                              context.countryList?.map((item, index) => {
+                                return (
+                                  <li key={index}>
+                                    <Button
+                                      onClick={() => {
+                                        setSelectedcountry(item.country);
+                                        closeModal();
+                                      }}
+                                    >
+                                      {item.country}{" "}
+                                    </Button>
+                                  </li>
+                                );
+                              })}
+                          </ul>
+                        </div>
+                      </Dialog>
+                    </div>
+
+                    <div className="d2-stock">
+                      <p>In stock</p>
+                    </div>
+
+                    <div className="d2-quantity">
+                      <select
+                        value={quantity}
+                        onChange={handleChange}
+                        className="d2-dropdown"
+                      >
+                        {[1, 2, 3, 4, 5].map((num) => (
+                          <option key={num} value={num}>
+                            {num}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="d2-buying">
+                      <button className="first-button">Add to cart</button>
+                      <button className="second-button">Buy Now</button>
+                    </div>
+
+                    <div className="d2-gift">
+                      <input className="d2-gift-check" type="checkbox" />
+                      <p>Add gift options</p>
+                    </div>
+
+                    <div className="d2-wish-list">
+                      <button className="d2-wish-button">
+                        Add to Wish List
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
+            ))
+          ) : (
+            <div>No products available</div>
+          )}
         </div>
       </div>
       <br />

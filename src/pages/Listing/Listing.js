@@ -1,4 +1,3 @@
-import Circle from "@uiw/react-color-circle";
 import { useEffect, useState } from "react";
 import "swiper/css"; // Swiper core styles
 import "swiper/css/navigation"; // Navigation module styles
@@ -9,12 +8,10 @@ import Sidebar from "../../components/Sidebar/Sidebar";
 import { fetchDataFromApi } from "../../utils/api";
 
 const Listing = () => {
-  const [selectedcolor, setselectedcolor] = useState("#2b3a53");
+ 
   const [categories, setCategories] = useState([]);
 
-  const handlecolorchange = (color) => {
-    setselectedcolor(color.hex);
-  };
+  
 
   useEffect(() => {
     const getCategories = async () => {
@@ -29,7 +26,7 @@ const Listing = () => {
     getCategories();
   }, []);
 
-  const colors = ["#2b3a53", "#98b2ba", "#878b8c"];
+
   return (
     <>
       <Swiper
@@ -77,15 +74,7 @@ const Listing = () => {
                       <p>Samsung Galaxy M 15 5G</p>
                       <p>Prime Edition (Blue Topaz,6.. </p>
                     </div>
-                    <div className="color-picker">
-                      <Circle
-                        color={selectedcolor}
-                        onChange={handlecolorchange}
-                        colors={colors}
-                        radius={5}
-                        className="circle-edit"
-                      />
-                    </div>
+                  
                   </div>
 
                   <div className="row1-content">
