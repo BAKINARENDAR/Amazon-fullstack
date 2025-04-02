@@ -5,9 +5,9 @@ import { Button } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { IoIosArrowDown, IoMdClose } from "react-icons/io";
-import "swiper/css"; // Swiper core styles
-import "swiper/css/navigation"; // Navigation module styles
-import "swiper/css/pagination"; // Pagination module styles
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 import { Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { MyContext } from "../../App";
@@ -28,7 +28,7 @@ const ProductDetails = () => {
     const fetchProducts = async () => {
       try {
         const res = await fetchDataFromApi("/api/product");
-        console.log("API response:", res); // Optional: to verify structure
+        console.log("API response:", res);
         setProducts(res);
       } catch (err) {
         console.error("Error fetching categories:", err);
@@ -36,49 +36,31 @@ const ProductDetails = () => {
     };
 
     fetchProducts();
-    window.scrollTo(0, 0); // This will scroll the page to the top
+    window.scrollTo(0, 0);
   }, []);
 
   const [isopenModal, setisopenModal] = useState(false);
-  const closeModal = () => {
-    setisopenModal(false); // Use setisopenModal to update the state
-  };
-
-  const openModal = () => {
-    setisopenModal(true);
-  };
+  const closeModal = () => setisopenModal(false);
+  const openModal = () => setisopenModal(true);
   const context = useContext(MyContext);
   const [Selectedcountry, setSelectedcountry] = useState("India");
-
   const [quantity, setquantity] = useState(1);
-  const handleChange = (e) => {
-    setquantity(e.target.value);
-  };
+  const handleChange = (e) => setquantity(e.target.value);
 
   const reviewsData = {
     overallRating: 3.9,
     totalRatings: 67,
     ratingsbreakdown: [
       { stars: 5, percentage: 55 },
-      { stars: 5, percentage: 55 },
-      { stars: 5, percentage: 55 },
-      { stars: 5, percentage: 55 },
+      { stars: 4, percentage: 25 },
+      { stars: 3, percentage: 10 },
+      { stars: 2, percentage: 5 },
+      { stars: 1, percentage: 5 },
     ],
   };
-  const [showrating, setshowrating] = useState(false);
-  const handleMouseEnter = () => {
-    setshowrating(true);
-  };
 
-  const handleMouseLeave = () => {
-    setshowrating(false);
-  };
-  const closerating = () => {
-    setshowrating(false); // Close the modal
-  };
   const [selectedSize, setSelectedSize] = useState("8GB+256GB"); // Default selected option
-
-  const options = ["8GB+256GB", "12GB+256GB"];
+  const options = ["8GB+256GB", "12GB+256GB"]; // Predefined options if variants is a single string
 
   return (
     <>
@@ -90,9 +72,7 @@ const ProductDetails = () => {
                 <ProductsZoom />
                 <div className="details-content-right">
                   <div className="details1">
-                    <h1>
-                      <h1>{product.name || "Product Name"}</h1>
-                    </h1>
+                    <h1>{product.name || "Product Name"}</h1>
 
                     <div className="rating-container">
                       <Rating
@@ -183,43 +163,18 @@ const ProductDetails = () => {
                     <div className="pdt-size-ram">
                       <span>Size: {selectedSize}</span>
                       <div className="size-options">
-                        {product.variants && product.variants.length > 0 ? (
-                          product.variants.map((variant, index) => {
-                            // Clean up the variant to remove brackets and quotes
-                            let cleanedVariant = variant;
-                            if (typeof variant === "string") {
-                              // If it's a stringified array like '["1L"]', parse it and take the first element
-                              if (
-                                variant.startsWith("[") &&
-                                variant.endsWith("]")
-                              ) {
-                                try {
-                                  cleanedVariant = JSON.parse(variant)[0];
-                                } catch (e) {
-                                  cleanedVariant = variant.replace(
-                                    /[\[\]"]+/g,
-                                    ""
-                                  ); // Fallback: strip brackets and quotes
-                                }
-                              } else {
-                                cleanedVariant = variant; // Already a string like "1L"
-                              }
-                            }
-
-                            return (
-                              <Button
-                                key={index}
-                                className={`size-option ${
-                                  selectedSize === cleanedVariant
-                                    ? "selected"
-                                    : ""
-                                }`}
-                                onClick={() => setSelectedSize(cleanedVariant)}
-                              >
-                                {cleanedVariant}
-                              </Button>
-                            );
-                          })
+                        {product.variants ? (
+                          options.map((option, index) => (
+                            <Button
+                              key={index}
+                              className={`size-option ${
+                                selectedSize === option ? "selected" : ""
+                              }`}
+                              onClick={() => setSelectedSize(option)}
+                            >
+                              {option.variant}
+                            </Button>
+                          ))
                         ) : (
                           <span>No variants available</span>
                         )}
@@ -229,32 +184,7 @@ const ProductDetails = () => {
                       <h2>About this item</h2>
                       <ul>
                         <li>
-                          ✅ Package Contains - (6 Pcs) Dining Table Food
-                          Mats/Placemats | Color - Marble Print - Cream & Gold |
-                          Material - PVC | Product Dimensions - 46x32x1 cm
-                        </li>
-                        <li>
-                          ✅ Safe use on any surface - This dining table mats
-                          pieces set protects your table from spills because it
-                          is made from durable materials that resist stains
-                        </li>
-                        <li>
-                          ✅ Long-lasting and durable - Our food mat for dining
-                          is designed to be reusable so it provides a
-                          cost-effective solution while maintaining its quality
-                          over time
-                        </li>
-                        <li>
-                          ✅ Perfect for Everyday Use - Our dining table mat are
-                          designed for daily use, so you can protect your dining
-                          table every day while maintaining a neat and tidy
-                          appearance.
-                        </li>
-                        <li>
-                          ✅ Easy maintenance with washable material - This
-                          dining table plate mat features a washable design that
-                          allows quick cleaning after every use because it is
-                          crafted to be reusable for everyday dining.
+                         {product.description}
                         </li>
                       </ul>
                     </div>
@@ -269,7 +199,7 @@ const ProductDetails = () => {
                     </div>
                     <div className="d2-delivery">
                       <h3>
-                        <span>FREE delivery</span>Sunday,19
+                        <span>FREE delivery</span> Sunday, 19
                       </h3>
                       <p>
                         <strong>January</strong> on your first order.
@@ -280,9 +210,7 @@ const ProductDetails = () => {
                     </div>
 
                     <div className="d2-delivery2">
-                      <p>
-                        Or fastest delivery <strong>Tomorrow</strong>,
-                      </p>
+                      <p>Or fastest delivery <strong>Tomorrow</strong>,</p>
                       <p>
                         <strong> January.</strong>
                       </p>
@@ -301,7 +229,7 @@ const ProductDetails = () => {
                           <div className="locationh2">
                             <h3>Choose your location</h3>
                             <Button className="close" onClick={closeModal}>
-                              <IoMdClose />{" "}
+                              <IoMdClose />
                             </Button>
                           </div>
                           <div className="location-p">
@@ -323,20 +251,18 @@ const ProductDetails = () => {
 
                           <ul className="countryList">
                             {context.countryList?.length !== 0 &&
-                              context.countryList?.map((item, index) => {
-                                return (
-                                  <li key={index}>
-                                    <Button
-                                      onClick={() => {
-                                        setSelectedcountry(item.country);
-                                        closeModal();
-                                      }}
-                                    >
-                                      {item.country}{" "}
-                                    </Button>
-                                  </li>
-                                );
-                              })}
+                              context.countryList?.map((item, index) => (
+                                <li key={index}>
+                                  <Button
+                                    onClick={() => {
+                                      setSelectedcountry(item.country);
+                                      closeModal();
+                                    }}
+                                  >
+                                    {item.country}
+                                  </Button>
+                                </li>
+                              ))}
                           </ul>
                         </div>
                       </Dialog>
@@ -420,7 +346,6 @@ const ProductDetails = () => {
             </div>
             <div className="ratings-info">
               <IoIosArrowDown className="arrow-down" />
-
               <p>How are ratings calculated?</p>
             </div>
 
@@ -602,4 +527,5 @@ const ProductDetails = () => {
     </>
   );
 };
+
 export default ProductDetails;
