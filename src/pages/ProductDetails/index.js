@@ -5,6 +5,7 @@ import { Button } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { IoIosArrowDown, IoMdClose } from "react-icons/io";
+import { useParams } from "react-router-dom"; // Add this import
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -22,22 +23,42 @@ import ret from "./ret.png";
 import secure from "./secure.png";
 import top from "./top.png";
 
+
 const ProductDetails = () => {
-  const [products, setProducts] = useState([]);
+  const { id } = useParams(); // Get the product ID from the URL
+  const [product, setProduct] = useState(null); // Change to single product, not array
+  const [hasFetched, setHasFetched] = useState(false);
+  const [error, setError] = useState(null);
+
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchProduct = async () => {
+      if (hasFetched) return;
+      console.log("Current URL:", window.location.href); // Debug the full URL
+      console.log("Fetching product with ID:", id);
+      if (!id) {
+        console.error("ID is undefined, check the URL:", window.location.href);
+        setError("Product ID is missing");
+        return;
+      }
       try {
-        const res = await fetchDataFromApi("/api/product");
-        console.log("API response:", res);
-        setProducts(res);
+        console.log("Fetching product with ID:", id); // Debug the ID
+        const res = await fetchDataFromApi(`/api/product/${id}`);
+        console.log("Product fetched:", res); // Debug the response
+        setProduct(res);
+        setHasFetched(true);
+        if (res?.variants) {
+          const variantsArray = res.variants.split(",");
+          setSelectedSize(variantsArray[0]);
+        }
       } catch (err) {
-        console.error("Error fetching categories:", err);
+        console.error("Error fetching product:", err);
+        setError(err.message || "Failed to fetch product");
       }
     };
 
-    fetchProducts();
+    fetchProduct();
     window.scrollTo(0, 0);
-  }, []);
+  }, [id]);
 
   const [isopenModal, setisopenModal] = useState(false);
   const closeModal = () => setisopenModal(false);
@@ -59,258 +80,240 @@ const ProductDetails = () => {
     ],
   };
 
-  const [selectedSize, setSelectedSize] = useState("8GB+256GB"); // Default selected option
-  const options = ["8GB+256GB", "12GB+256GB"]; // Predefined options if variants is a single string
+  const [selectedSize, setSelectedSize] = useState(""); // Default selected option
 
   return (
     <>
       <div className="product-details-page">
         <div className="details-container">
-          {products.length > 0 ? (
-            products.map((product, index) => (
-              <div className="details-list" key={index}>
-                <ProductsZoom />
-                <div className="details-content-right">
-                  <div className="details1">
-                    <h1>{product.name || "Product Name"}</h1>
-
-                    <div className="rating-container">
-                      <Rating
-                        className="rating"
-                        name="read-only"
-                        value={product.rating}
-                        readOnly
-                      />
-                    </div>
-
-                    <div className="rating-views">
-                      <h4>600+ bought in past month</h4>
-                    </div>
-
-                    <div className="badge-container">
-                      <div className="badge">
-                        <span className="discount">
-                          {product.Regularprice && product.Discountedprice
-                            ? `${(
-                                ((product.Regularprice -
-                                  product.Discountedprice) /
-                                  product.Regularprice) *
-                                100
-                              ).toFixed(0)}% off`
-                            : "No discount"}
-                        </span>
-                        <span className="deal">Limited time deal</span>
-                      </div>
-                    </div>
-
-                    <div className="pdtdetails-price">
-                      <span className="pdtdetails-current-price">
-                        ₹{product.Discountedprice}
+          {product ? ( // Render single product instead of mapping
+            <div className="details-list">
+              <ProductsZoom images={product.images} />
+              <div className="details-content-right">
+                <div className="details1">
+                  <h1>{product.name || "Product Name"}</h1>
+                  <div className="rating-container">
+                    <Rating
+                      className="rating"
+                      name="read-only"
+                      value={product.rating}
+                      readOnly
+                    />
+                  </div>
+                  <div className="rating-views">
+                    <h4>600+ bought in past month</h4>
+                  </div>
+                  <div className="badge-container">
+                    <div className="badge">
+                      <span className="discount">
+                        {product.Regularprice && product.Discountedprice
+                          ? `${(
+                              ((product.Regularprice - product.Discountedprice) /
+                                product.Regularprice) *
+                              100
+                            ).toFixed(0)}% off`
+                          : "No discount"}
                       </span>
-                      <span className="pdtdetails-original-price">
-                        M.R.P: <del>₹{product.Regularprice}</del>
-                      </span>
-                    </div>
-                    <div className="fulfilled">
-                      <img src={fulfilled} alt="fulfilled-image" />
-                      <p>Inclusive of all taxes</p>
-                    </div>
-                    <div className="mini-product-delivery">
-                      <Swiper
-                        modules={[Navigation]}
-                        slidesPerView={5}
-                        spaceBetween={0}
-                        navigation
-                        className="miniSwiper"
-                      >
-                        <SwiperSlide>
-                          <div className="first-mini">
-                            <img src={cash} alt="first-mini" />
-                          </div>
-                        </SwiperSlide>
-                        <SwiperSlide>
-                          <div className="first-mini">
-                            <img src={ret} alt="first-mini" />
-                          </div>
-                        </SwiperSlide>
-                        <SwiperSlide>
-                          <div className="first-mini">
-                            <img src={amzon} alt="first-mini" />
-                          </div>
-                        </SwiperSlide>
-                        <SwiperSlide>
-                          <div className="first-mini">
-                            <img src={free} alt="first-mini" />
-                          </div>
-                        </SwiperSlide>
-                        <SwiperSlide>
-                          <div className="first-mini">
-                            <img src={top} alt="first-mini" />
-                          </div>
-                        </SwiperSlide>
-                        <SwiperSlide>
-                          <div className="first-mini">
-                            <img src={secure} alt="first-mini" />
-                          </div>
-                        </SwiperSlide>
-                      </Swiper>
-                    </div>
-                    <div className="pdt-color">
-                      <span className="color">
-                        Color: <strong>{product.color}</strong>
-                      </span>
-                    </div>
-                    <div className="pdt-size-ram">
-                      <span>Size: {selectedSize}</span>
-                      <div className="size-options">
-                        {product.variants ? (
-                          options.map((option, index) => (
-                            <Button
-                              key={index}
-                              className={`size-option ${
-                                selectedSize === option ? "selected" : ""
-                              }`}
-                              onClick={() => setSelectedSize(option)}
-                            >
-                              {option.variant}
-                            </Button>
-                          ))
-                        ) : (
-                          <span>No variants available</span>
-                        )}
-                      </div>
-                    </div>
-                    <div className="about-product">
-                      <h2>About this item</h2>
-                      <ul>
-                        <li>
-                         {product.description}
-                        </li>
-                      </ul>
+                      <span className="deal">Limited time deal</span>
                     </div>
                   </div>
-
-                  <div className="details2">
-                    <div className="info">
-                      <h4> ₹174</h4>
-                    </div>
-                    <div className="fulfilled">
-                      <img src={fulfilled} alt="fulfilled-image" />
-                    </div>
-                    <div className="d2-delivery">
-                      <h3>
-                        <span>FREE delivery</span> Sunday, 19
-                      </h3>
-                      <p>
-                        <strong>January</strong> on your first order.
-                      </p>
-                      <h4>
-                        <span>Details</span>
-                      </h4>
-                    </div>
-
-                    <div className="d2-delivery2">
-                      <p>Or fastest delivery <strong>Tomorrow</strong>,</p>
-                      <p>
-                        <strong> January.</strong>
-                      </p>
-                    </div>
-
-                    <div className="d2-address">
-                      <div className="d2-first">
-                        <HiOutlineLocationMarker />
-                        <p>Delivering to {Selectedcountry}</p>
-                      </div>
-                      <div className="d2-second">
-                        <p onClick={openModal}>Update Location</p>
-                      </div>
-                      <Dialog open={isopenModal} onClose={closeModal}>
-                        <div className="locationModal">
-                          <div className="locationh2">
-                            <h3>Choose your location</h3>
-                            <Button className="close" onClick={closeModal}>
-                              <IoMdClose />
-                            </Button>
-                          </div>
-                          <div className="location-p">
-                            <p>
-                              Select a delivery location to see product
-                              availability and delivery options
-                            </p>
-                          </div>
-                          <div>
-                            <input
-                              type="text"
-                              placeholder="Search location"
-                              className="search-location"
-                            />
-                            <button className="search ">
-                              <FaSearch />
-                            </button>
-                          </div>
-
-                          <ul className="countryList">
-                            {context.countryList?.length !== 0 &&
-                              context.countryList?.map((item, index) => (
-                                <li key={index}>
-                                  <Button
-                                    onClick={() => {
-                                      setSelectedcountry(item.country);
-                                      closeModal();
-                                    }}
-                                  >
-                                    {item.country}
-                                  </Button>
-                                </li>
-                              ))}
-                          </ul>
+                  <div className="pdtdetails-price">
+                    <span className="pdtdetails-current-price">
+                      ₹{product.Discountedprice}
+                    </span>
+                    <span className="pdtdetails-original-price">
+                      M.R.P: <del>₹{product.Regularprice}</del>
+                    </span>
+                  </div>
+                  <div className="fulfilled">
+                    <img src={fulfilled} alt="fulfilled-image" />
+                    <p>Inclusive of all taxes</p>
+                  </div>
+                  <div className="mini-product-delivery">
+                    <Swiper
+                      modules={[Navigation]}
+                      slidesPerView={5}
+                      spaceBetween={0}
+                      navigation
+                      className="miniSwiper"
+                    >
+                      <SwiperSlide>
+                        <div className="first-mini">
+                          <img src={cash} alt="first-mini" />
                         </div>
-                      </Dialog>
+                      </SwiperSlide>
+                      <SwiperSlide>
+                        <div className="first-mini">
+                          <img src={ret} alt="first-mini" />
+                        </div>
+                      </SwiperSlide>
+                      <SwiperSlide>
+                        <div className="first-mini">
+                          <img src={amzon} alt="first-mini" />
+                        </div>
+                      </SwiperSlide>
+                      <SwiperSlide>
+                        <div className="first-mini">
+                          <img src={free} alt="first-mini" />
+                        </div>
+                      </SwiperSlide>
+                      <SwiperSlide>
+                        <div className="first-mini">
+                          <img src={top} alt="first-mini" />
+                        </div>
+                      </SwiperSlide>
+                      <SwiperSlide>
+                        <div className="first-mini">
+                          <img src={secure} alt="first-mini" />
+                        </div>
+                      </SwiperSlide>
+                    </Swiper>
+                  </div>
+                  <div className="pdt-color">
+                    <span className="color">
+                      Color: <strong>{product.color}</strong>
+                    </span>
+                  </div>
+                  <div className="pdt-size-ram">
+                    <span>Size: {selectedSize || "Select a size"}</span>
+                    <div className="size-options">
+                      {product.variants ? (
+                        product.variants.split(",").map((variant, index) => (
+                          <Button
+                            key={index}
+                            className={`size-option ${
+                              selectedSize === variant ? "selected" : ""
+                            }`}
+                            onClick={() => setSelectedSize(variant)}
+                          >
+                            {variant}
+                          </Button>
+                        ))
+                      ) : (
+                        <span>No variants available</span>
+                      )}
                     </div>
+                  </div>
+                  <div className="about-product">
+                    <h2>About this item</h2>
+                    <ul>
+                      <li>{product.description}</li>
+                    </ul>
+                  </div>
+                </div>
 
-                    <div className="d2-stock">
-                      <p>In stock</p>
+                <div className="details2">
+                  <div className="info">
+                    <h4>₹{product.Discountedprice}</h4>
+                  </div>
+                  <div className="fulfilled">
+                    <img src={fulfilled} alt="fulfilled-image" />
+                  </div>
+                  <div className="d2-delivery">
+                    <h3>
+                      <span>FREE delivery</span> Sunday, 19
+                    </h3>
+                    <p>
+                      <strong>January</strong> on your first order.
+                    </p>
+                    <h4>
+                      <span>Details</span>
+                    </h4>
+                  </div>
+                  <div className="d2-delivery2">
+                    <p>
+                      Or fastest delivery <strong>Tomorrow</strong>,
+                    </p>
+                    <p>
+                      <strong>January.</strong>
+                    </p>
+                  </div>
+                  <div className="d2-address">
+                    <div className="d2-first">
+                      <HiOutlineLocationMarker />
+                      <p>Delivering to {Selectedcountry}</p>
                     </div>
-
-                    <div className="d2-quantity">
-                      <select
-                        value={quantity}
-                        onChange={handleChange}
-                        className="d2-dropdown"
-                      >
-                        {[1, 2, 3, 4, 5].map((num) => (
-                          <option key={num} value={num}>
-                            {num}
-                          </option>
-                        ))}
-                      </select>
+                    <div className="d2-second">
+                      <p onClick={openModal}>Update Location</p>
                     </div>
-                    <div className="d2-buying">
-                      <button className="first-button">Add to cart</button>
-                      <button className="second-button">Buy Now</button>
-                    </div>
-
-                    <div className="d2-gift">
-                      <input className="d2-gift-check" type="checkbox" />
-                      <p>Add gift options</p>
-                    </div>
-
-                    <div className="d2-wish-list">
-                      <button className="d2-wish-button">
-                        Add to Wish List
-                      </button>
-                    </div>
+                    <Dialog open={isopenModal} onClose={closeModal}>
+                      <div className="locationModal">
+                        <div className="locationh2">
+                          <h3>Choose your location</h3>
+                          <Button className="close" onClick={closeModal}>
+                            <IoMdClose />
+                          </Button>
+                        </div>
+                        <div className="location-p">
+                          <p>
+                            Select a delivery location to see product
+                            availability and delivery options
+                          </p>
+                        </div>
+                        <div>
+                          <input
+                            type="text"
+                            placeholder="Search location"
+                            className="search-location"
+                          />
+                          <button className="search">
+                            <FaSearch />
+                          </button>
+                        </div>
+                        <ul className="countryList">
+                          {context.countryList?.length !== 0 &&
+                            context.countryList?.map((item, index) => (
+                              <li key={index}>
+                                <Button
+                                  onClick={() => {
+                                    setSelectedcountry(item.country);
+                                    closeModal();
+                                  }}
+                                >
+                                  {item.country}
+                                </Button>
+                              </li>
+                            ))}
+                        </ul>
+                      </div>
+                    </Dialog>
+                  </div>
+                  <div className="d2-stock">
+                    <p>In stock</p>
+                  </div>
+                  <div className="d2-quantity">
+                    <select
+                      value={quantity}
+                      onChange={handleChange}
+                      className="d2-dropdown"
+                    >
+                      {[1, 2, 3, 4, 5].map((num) => (
+                        <option key={num} value={num}>
+                          {num}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="d2-buying">
+                    <button className="first-button">Add to cart</button>
+                    <button className="second-button">Buy Now</button>
+                  </div>
+                  <div className="d2-gift">
+                    <input className="d2-gift-check" type="checkbox" />
+                    <p>Add gift options</p>
+                  </div>
+                  <div className="d2-wish-list">
+                    <button className="d2-wish-button">Add to Wish List</button>
                   </div>
                 </div>
               </div>
-            ))
+            </div>
           ) : (
-            <div>No products available</div>
+            <div>Loading product details...</div> // Show loading state
           )}
         </div>
       </div>
       <br />
-
       <RelatedProducts title="Recently viewed products" />
       <RelatedProducts title="Recently viewed products" />
       <div className="rating-review">
@@ -529,3 +532,5 @@ const ProductDetails = () => {
 };
 
 export default ProductDetails;
+
+

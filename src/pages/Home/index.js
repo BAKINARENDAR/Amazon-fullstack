@@ -1,5 +1,6 @@
 import Rating from "@mui/material/Rating";
 import { useContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import "swiper/css"; // Swiper core styles
 import "swiper/css/navigation"; // Navigation module styles
 import "swiper/css/pagination"; // Pagination module styles
@@ -22,10 +23,13 @@ const Home = () => {
     const fetchProducts = async () => {
       try {
         const res = await fetchDataFromApi("/api/product");
-        console.log("API response:", res); // Optional: to verify structure
+        console.log("API response (Home):", res);
+        res.forEach((product, index) => {
+          console.log(`Product ${index} _id:`, product._id); // Debug each _id
+        });
         setProducts(res);
       } catch (err) {
-        console.error("Error fetching categories:", err);
+        console.error("Error fetching products:", err);
       }
     };
 
@@ -111,48 +115,58 @@ const Home = () => {
           {products.length > 0 ? (
             products.map((product, index) => (
               <SwiperSlide key={index}>
-                <div className="product">
-                  <div className="product-content">
-                    <div className="product-image">
-                    {product.images?.length > 0 ? (
-                            <img
-                              src={product.images[0]}
-                              alt="Product"
-                              width={150}
-                              height={160}
-                            />
-                          ) : (
-                            <span>No Image</span>
-                          )}
-                    </div>
-                    <div className="pdt-name">
-                      <p>{product.name}</p>
-                    </div>
-                    <div className="rating">
-                      <Rating
-                        name="read-only"
-                        value={product.rating}
-                        readOnly
-                      />
-                    </div>
-                    <div className="featured">
-                      <div className="badge">
-                      <span className="discount">
-      {product.Regularprice && product.Discountedprice
-        ? `${((product.Regularprice - product.Discountedprice) / product.Regularprice * 100).toFixed(0)}% off`
-        : "No discount"}
-    </span>
-                        <span className="deal">Limited time deal</span>
+                
+                <Link to={`/product/${product._id}`} className="product-link">
+                  <div className="product">
+                    <div className="product-content">
+                      <div className="product-image">
+                        {product.images?.length > 0 ? (
+                          <img
+                            src={product.images[0]}
+                            alt="Product"
+                            width={150}
+                            height={160}
+                          />
+                        ) : (
+                          <span>No Image</span>
+                        )}
                       </div>
-                      <div className="pdt-price">
-                        <span className="current-price">₹{product.Discountedprice}</span>
-                        <span className="original-price">
-                          M.R.P: <del>₹{product.Regularprice}</del>
-                        </span>
+                      <div className="pdt-name">
+                        <p>{product.name}</p>
+                      </div>
+                      <div className="rating">
+                        <Rating
+                          name="read-only"
+                          value={product.rating}
+                          readOnly
+                        />
+                      </div>
+                      <div className="featured">
+                        <div className="badge">
+                          <span className="discount">
+                            {product.Regularprice && product.Discountedprice
+                              ? `${(
+                                  ((product.Regularprice -
+                                    product.Discountedprice) /
+                                    product.Regularprice) *
+                                  100
+                                ).toFixed(0)}% off`
+                              : "No discount"}
+                          </span>
+                          <span className="deal">Limited time deal</span>
+                        </div>
+                        <div className="pdt-price">
+                          <span className="current-price">
+                            ₹{product.Discountedprice}
+                          </span>
+                          <span className="original-price">
+                            M.R.P: <del>₹{product.Regularprice}</del>
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                </Link>
               </SwiperSlide>
             ))
           ) : (

@@ -17,7 +17,7 @@ const RelatedProducts=(props)=>{
       const fetchProducts = async () => {
         try {
           const res = await fetchDataFromApi("/api/product");
-          console.log("API response:", res); // Optional: to verify structure
+        
           setProducts(res);
         } catch (err) {
           console.error("Error fetching categories:", err);
