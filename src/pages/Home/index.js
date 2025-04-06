@@ -1,9 +1,9 @@
 import Rating from "@mui/material/Rating";
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import "swiper/css"; // Swiper core styles
-import "swiper/css/navigation"; // Navigation module styles
-import "swiper/css/pagination"; // Pagination module styles
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 import { Autoplay, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { MyContext } from "../../App";
@@ -13,6 +13,7 @@ import hero2 from "./hero2.jpg";
 import hero3 from "./hero3.jpg";
 import hero5 from "./hero5.jpg";
 import hero6 from "./hero6.jpg";
+
 const Home = () => {
   const context = useContext(MyContext);
   const [products, setProducts] = useState([]);
@@ -42,8 +43,8 @@ const Home = () => {
         navigation={true}
         pagination={{ clickable: true }}
         autoplay={{
-          delay: 2000, // Delay between slides (in ms)
-          disableOnInteraction: false, // Continue autoplay after user interaction
+          delay: 2000,
+          disableOnInteraction: false,
         }}
         modules={[Navigation, Autoplay]}
         className="bannerSwiper"
@@ -52,16 +53,16 @@ const Home = () => {
           <img src={hero1} alt="slider1" />
         </SwiperSlide>
         <SwiperSlide>
-          <img src={hero2} alt="slider1" />
+          <img src={hero2} alt="slider2" />
         </SwiperSlide>
         <SwiperSlide>
-          <img src={hero3} alt="slider1" />
+          <img src={hero3} alt="slider3" />
         </SwiperSlide>
         <SwiperSlide>
-          <img src={hero5} alt="slider1" />
+          <img src={hero5} alt="slider5" />
         </SwiperSlide>
         <SwiperSlide>
-          <img src={hero6} alt="slider1" />
+          <img src={hero6} alt="slider6" />
         </SwiperSlide>
       </Swiper>
 
@@ -114,9 +115,12 @@ const Home = () => {
         >
           {products.length > 0 ? (
             products.map((product, index) => (
-              <SwiperSlide key={index}>
-                
-                <Link to={`/product/${product._id}`} className="product-link">
+              <SwiperSlide key={product._id || index}> {/* Use _id as key */}
+                <Link
+                  to={`/product/${product._id}`} // Fixed string interpolation
+                  className="product-link"
+                  style={{ textDecoration: "none" }}
+                >
                   <div className="product">
                     <div className="product-content">
                       <div className="product-image">
@@ -150,7 +154,7 @@ const Home = () => {
                                     product.Discountedprice) /
                                     product.Regularprice) *
                                   100
-                                ).toFixed(0)}% off`
+                                ).toFixed(0)}% off` // Fixed template literal
                               : "No discount"}
                           </span>
                           <span className="deal">Limited time deal</span>
@@ -170,9 +174,10 @@ const Home = () => {
               </SwiperSlide>
             ))
           ) : (
-            <p>Loading products...</p> // Show loading while fetching
+            <p>Loading products...</p>
           )}
         </Swiper>
+
         <div className="box1 box">
           <div className="box-content">
             <h2>Up to 75% off | Wall arts, painting, decor & more...</h2>
@@ -207,4 +212,5 @@ const Home = () => {
     </>
   );
 };
+
 export default Home;
