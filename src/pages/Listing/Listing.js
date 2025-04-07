@@ -80,7 +80,7 @@ const Listing = () => {
          <SwiperSlide
          key={categories._id}
          onClick={() => handleCategoryClick(categories)}
-         className={selectedCategory?._id === categories._id ? "active-category" : ""}
+        
        >
        
             <Link
