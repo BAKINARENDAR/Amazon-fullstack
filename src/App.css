@@ -788,14 +788,9 @@ font-size: 0.8rem;
 .listing-container {
   background-color: #ffff;
 }
-.product-list .sidebar {
-  width: 20%;
-  background-color: #007185;
-  background-color: #ffff;
-  margin: 0.7rem;
-}
+
 .product-list .content-right {
-  width: 85%;
+  width: 100%;
   background-color: #ffff;
 }
 .depart-content {

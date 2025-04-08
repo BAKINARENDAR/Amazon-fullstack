@@ -1,18 +1,18 @@
 import Rating from "@mui/material/Rating";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Autoplay, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import Sidebar from "../../components/Sidebar/Sidebar";
 import { fetchDataFromApi } from "../../utils/api";
 
 const Listing = () => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null); // Category filter
+  const { id } = useParams(); // Extract category ID from URL
   const slidesPerView = 5;
 
   // Fetch categories on mount
@@ -24,18 +24,45 @@ const Listing = () => {
         setCategories(res?.categoryList || []);
       } catch (err) {
         console.error("Error fetching categories:", err);
+        setCategories([]);
       }
     };
     getCategories();
   }, []);
 
-  // Fetch products when selectedCategory changes
+  // Set initial category from URL only after categories are loaded
+  useEffect(() => {
+    if (categories.length > 0) {
+      if (id === "todays-deals") {
+        setSelectedCategory(null); // No category for "Today's Deals"
+      } else if (id) {
+        const category = categories.find((cat) => cat._id === id);
+        if (category && selectedCategory?.name !== category.name) {
+          setSelectedCategory(category); // Set category from URL
+        } else if (!category && selectedCategory !== null) {
+          setSelectedCategory(null); // Reset if invalid ID
+        }
+      } else if (selectedCategory !== null) {
+        setSelectedCategory(null); // Reset if no ID
+      }
+    }
+  }, [id, categories]);
+
+  // Fetch products when selectedCategory or id changes
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const endpoint = selectedCategory
-          ? `/api/product?category=${encodeURIComponent(selectedCategory.name)}`
-          : "/api/product";
+        let endpoint = "/api/product";
+        if (id === "todays-deals") {
+          endpoint = "/api/product"; // Fetch all products for "Today's Deals"
+          // Alternative: endpoint = "/api/product?discount=1"; // Fetch discounted products
+        } else if (selectedCategory) {
+          endpoint = `/api/product?category=${encodeURIComponent(selectedCategory.name)}`;
+        } else if (!id) {
+          endpoint = "/api/product"; // Fetch all products if no ID
+        } else {
+          return; // Skip fetch if id present but no valid category yet
+        }
 
         console.log("Fetching products from endpoint:", endpoint);
         const res = await fetchDataFromApi(endpoint);
@@ -46,21 +73,26 @@ const Listing = () => {
         setProducts([]);
       }
     };
-    fetchProducts();
-  }, [selectedCategory]);
+
+    // Only fetch if categories are loaded or no id is present
+    if (categories.length > 0 || !id) {
+      fetchProducts();
+    }
+  }, [selectedCategory, categories, id]);
 
   const handleCategoryClick = (category) => {
     console.log("Category clicked:", category);
     setSelectedCategory(category);
   };
 
-  // Render products in Swiper
   const renderProducts = () => {
     if (products.length === 0) {
       return (
         <p>
           {selectedCategory
-            ? "No products in this category"
+            ? `No products found in ${selectedCategory.name}`
+            : id === "todays-deals"
+            ? "No deals available today"
             : "Loading products..."}
         </p>
       );
@@ -73,16 +105,11 @@ const Listing = () => {
         navigation={true}
         pagination={{ clickable: true }}
         modules={[Navigation, Autoplay]}
-        autoplay={{ delay: 3000, disableOnInteraction: false }} // Optional: Auto-slide
+        autoplay={{ delay: 3000, disableOnInteraction: false }}
         className="productSwiper"
       >
         {products.map((product) => (
-         <SwiperSlide
-         key={categories._id}
-         onClick={() => handleCategoryClick(categories)}
-        
-       >
-       
+          <SwiperSlide key={product._id}>
             <Link
               to={`/product/${product._id}`}
               className="product-link"
@@ -177,8 +204,14 @@ const Listing = () => {
       <section className="product-listing-page">
         <div className="listing-container">
           <div className="product-list">
-            <Sidebar />
             <div className="content-right">
+              <h2>
+                {id === "todays-deals"
+                  ? "Today's Deals"
+                  : selectedCategory
+                  ? selectedCategory.name
+                  : "All Products"}
+              </h2>
               <div className="content-right-products">{renderProducts()}</div>
             </div>
           </div>
