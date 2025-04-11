@@ -1,17 +1,13 @@
-import Dialog from "@mui/material/Dialog";
 import Rating from "@mui/material/Rating";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
-import { FaSearch } from "react-icons/fa";
-import { HiOutlineLocationMarker } from "react-icons/hi";
-import { IoIosArrowDown, IoMdClose } from "react-icons/io";
+import { IoIosArrowDown } from "react-icons/io";
 import { useParams } from "react-router-dom";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { MyContext } from "../../App";
 import ProductsZoom from "../../components/ProductsZoom";
 import { fetchDataFromApi } from "../../utils/api";
 import amzon from "./amzon.png";
@@ -59,11 +55,7 @@ const ProductDetails = () => {
     window.scrollTo(0, 0);
   }, [id]); // Depend on id to re-fetch when it changes
 
-  const [isopenModal, setisopenModal] = useState(false);
-  const closeModal = () => setisopenModal(false);
-  const openModal = () => setisopenModal(true);
-  const context = useContext(MyContext);
-  const [Selectedcountry, setSelectedcountry] = useState("India");
+ 
   const [quantity, setquantity] = useState(1);
   const handleChange = (e) => setquantity(e.target.value);
 
@@ -206,81 +198,20 @@ const ProductDetails = () => {
                 </div>
 
                 <div className="details2">
-                  <div className="info">
-                    <h4>₹{product.Discountedprice}</h4>
+                <div className="pdtdetails-price">
+                    <span className="pdtdetails2-current-price">
+                      ₹{product.Discountedprice}
+                    </span>
+                    <span className="pdtdetails2-original-price">
+                      M.R.P: <del>₹{product.Regularprice}</del>
+                    </span>
                   </div>
                   <div className="fulfilled">
                     <img src={fulfilled} alt="fulfilled-image" />
                   </div>
-                  <div className="d2-delivery">
-                    <h3>
-                      <span>FREE delivery</span> Sunday, 19
-                    </h3>
-                    <p>
-                      <strong>January</strong> on your first order.
-                    </p>
-                    <h4>
-                      <span>Details</span>
-                    </h4>
-                  </div>
-                  <div className="d2-delivery2">
-                    <p>
-                      Or fastest delivery <strong>Tomorrow</strong>,
-                    </p>
-                    <p>
-                      <strong>January.</strong>
-                    </p>
-                  </div>
-                  <div className="d2-address">
-                    <div className="d2-first">
-                      <HiOutlineLocationMarker />
-                      <p>Delivering to {Selectedcountry}</p>
-                    </div>
-                    <div className="d2-second">
-                      <p onClick={openModal}>Update Location</p>
-                    </div>
-                    <Dialog open={isopenModal} onClose={closeModal}>
-                      <div className="locationModal">
-                        <div className="locationh2">
-                          <h3>Choose your location</h3>
-                          <Button className="close" onClick={closeModal}>
-                            <IoMdClose />
-                          </Button>
-                        </div>
-                        <div className="location-p">
-                          <p>
-                            Select a delivery location to see product
-                            availability and delivery options
-                          </p>
-                        </div>
-                        <div>
-                          <input
-                            type="text"
-                            placeholder="Search location"
-                            className="search-location"
-                          />
-                          <button className="search">
-                            <FaSearch />
-                          </button>
-                        </div>
-                        <ul className="countryList">
-                          {context.countryList?.length !== 0 &&
-                            context.countryList?.map((item, index) => (
-                              <li key={index}>
-                                <Button
-                                  onClick={() => {
-                                    setSelectedcountry(item.country);
-                                    closeModal();
-                                  }}
-                                >
-                                  {item.country}
-                                </Button>
-                              </li>
-                            ))}
-                        </ul>
-                      </div>
-                    </Dialog>
-                  </div>
+                 
+            
+               
                   <div className="d2-stock">
                     <p>In stock</p>
                   </div>

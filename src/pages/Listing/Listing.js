@@ -10,18 +10,31 @@ import { fetchDataFromApi } from "../../utils/api";
 
 const Listing = () => {
   const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState([]); // Will store unique categories
   const [selectedCategory, setSelectedCategory] = useState(null); // Category filter
   const { id } = useParams(); // Extract category ID from URL
-  const slidesPerView = 5;
 
-  // Fetch categories on mount
+  // Fetch categories on mount and remove duplicates
   useEffect(() => {
     const getCategories = async () => {
       try {
         const res = await fetchDataFromApi("/api/category");
-        console.log("Categories fetched:", res);
-        setCategories(res?.categoryList || []);
+        console.log("Raw Categories fetched:", res);
+
+        // Filter out duplicates based on _id first, then name as fallback
+        const uniqueCategories = res?.categoryList
+          ? res.categoryList.filter((category, index, self) => {
+              const firstIndex = self.findIndex(
+                (c) => c._id === category._id || c.name === category.name
+              );
+              console.log(
+                `Checking category: ${category.name}, _id: ${category._id}, index: ${index}, firstIndex: ${firstIndex}`
+              );
+              return index === firstIndex;
+            })
+          : [];
+        console.log("Unique Categories after filtering:", uniqueCategories);
+        setCategories(uniqueCategories);
       } catch (err) {
         console.error("Error fetching categories:", err);
         setCategories([]);
@@ -30,41 +43,38 @@ const Listing = () => {
     getCategories();
   }, []);
 
-  // Set initial category from URL only after categories are loaded
+  // Set initial category from URL
   useEffect(() => {
-    if (categories.length > 0) {
+    if (categories.length > 0 && id) {
       if (id === "todays-deals") {
-        setSelectedCategory(null); // No category for "Today's Deals"
-      } else if (id) {
+        setSelectedCategory(null);
+        console.log("Set selectedCategory to null for Today's Deals");
+      } else {
         const category = categories.find((cat) => cat._id === id);
-        if (category && selectedCategory?.name !== category.name) {
-          setSelectedCategory(category); // Set category from URL
-        } else if (!category && selectedCategory !== null) {
-          setSelectedCategory(null); // Reset if invalid ID
+        if (category) {
+          setSelectedCategory(category);
+          console.log("Set selectedCategory from URL:", category.name);
+        } else {
+          setSelectedCategory(null);
+          console.log("No matching category found, set to null");
         }
-      } else if (selectedCategory !== null) {
-        setSelectedCategory(null); // Reset if no ID
       }
     }
   }, [id, categories]);
 
-  // Fetch products when selectedCategory or id changes
+  // Fetch products based on selectedCategory
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         let endpoint = "/api/product";
-        if (id === "todays-deals") {
-          endpoint = "/api/product"; // Fetch all products for "Today's Deals"
-          // Alternative: endpoint = "/api/product?discount=1"; // Fetch discounted products
-        } else if (selectedCategory) {
-          endpoint = `/api/product?category=${encodeURIComponent(selectedCategory.name)}`;
-        } else if (!id) {
-          endpoint = "/api/product"; // Fetch all products if no ID
+        if (selectedCategory === null) {
+          endpoint = "/api/product"; // Fetch all products when no category is selected
+          console.log("Fetching all products from:", endpoint);
         } else {
-          return; // Skip fetch if id present but no valid category yet
+          endpoint = `/api/product?category=${encodeURIComponent(selectedCategory.name)}`;
+          console.log("Fetching products for category:", selectedCategory.name, "from:", endpoint);
         }
 
-        console.log("Fetching products from endpoint:", endpoint);
         const res = await fetchDataFromApi(endpoint);
         console.log("Products fetched:", res);
         setProducts(Array.isArray(res) ? res : []);
@@ -74,15 +84,12 @@ const Listing = () => {
       }
     };
 
-    // Only fetch if categories are loaded or no id is present
-    if (categories.length > 0 || !id) {
-      fetchProducts();
-    }
-  }, [selectedCategory, categories, id]);
+    fetchProducts();
+  }, [selectedCategory]);
 
   const handleCategoryClick = (category) => {
-    console.log("Category clicked:", category);
-    setSelectedCategory(category);
+    console.log("handleCategoryClick triggered with category:", category.name);
+    setSelectedCategory(category); // Update selected category
   };
 
   const renderProducts = () => {
@@ -99,75 +106,64 @@ const Listing = () => {
     }
 
     return (
-      <Swiper
-        slidesPerView={slidesPerView}
-        spaceBetween={10}
-        navigation={true}
-        pagination={{ clickable: true }}
-        modules={[Navigation, Autoplay]}
-        autoplay={{ delay: 3000, disableOnInteraction: false }}
-        className="productSwiper"
-      >
+      <div className="product-grid">
         {products.map((product) => (
-          <SwiperSlide key={product._id}>
-            <Link
-              to={`/product/${product._id}`}
-              className="product-link"
-              style={{ textDecoration: "none" }}
-            >
-              <div className="product">
-                <div className="product-content">
-                  <div className="product-image">
-                    {product.images?.length > 0 ? (
-                      <img
-                        src={product.images[0]}
-                        alt={product.name}
-                        width={150}
-                        height={160}
-                      />
-                    ) : (
-                      <span>No Image</span>
-                    )}
-                  </div>
-                  <div className="pdt-name">
-                    <p>{product.name}</p>
-                  </div>
-                  <div className="rating">
-                    <Rating
-                      name="read-only"
-                      value={product.rating || 0}
-                      readOnly
+          <Link
+            key={product._id}
+            to={`/product/${product._id}`}
+            style={{ textDecoration: "none" }}
+          >
+            <div className="product">
+              <div className="product-content">
+                <div className="product-image">
+                  {product.images?.length > 0 ? (
+                    <img
+                      src={product.images[0]}
+                      alt={product.name}
+                      width={150}
+                      height={160}
                     />
+                  ) : (
+                    <span>No Image</span>
+                  )}
+                </div>
+                <div className="pdt-name">
+                  <p>{product.name}</p>
+                </div>
+                <div className="rating">
+                  <Rating
+                    name="read-only"
+                    value={product.rating || 0}
+                    readOnly
+                  />
+                </div>
+                <div className="featured">
+                  <div className="badge">
+                    <span className="discount">
+                      {product.Regularprice && product.Discountedprice
+                        ? `${(
+                            ((product.Regularprice - product.Discountedprice) /
+                              product.Regularprice) *
+                            100
+                          ).toFixed(0)}% off`
+                        : "No discount"}
+                    </span>
+                    <span className="deal">Limited time deal</span>
                   </div>
-                  <div className="featured">
-                    <div className="badge">
-                      <span className="discount">
-                        {product.Regularprice && product.Discountedprice
-                          ? `${(
-                              ((product.Regularprice -
-                                product.Discountedprice) /
-                                product.Regularprice) *
-                              100
-                            ).toFixed(0)}% off`
-                          : "No discount"}
-                      </span>
-                      <span className="deal">Limited time deal</span>
-                    </div>
-                    <div className="pdt-price">
-                      <span className="current-price">
-                        ₹{product.Discountedprice}
-                      </span>
-                      <span className="original-price">
-                        M.R.P: <del>₹{product.Regularprice}</del>
-                      </span>
-                    </div>
+                  <div className="pdt-price">
+                    <span className="current-price">
+                      ₹{product.Discountedprice}
+                    </span>
+                    <span className="original-price">
+                      M.R.P: <del>₹{product.Regularprice}</del>
+                    </span>
                   </div>
                 </div>
               </div>
-            </Link>
-          </SwiperSlide>
+            </div>
+          </Link>
         ))}
-      </Swiper>
+      </div>
     );
   };
 
@@ -180,13 +176,14 @@ const Listing = () => {
         pagination={{ clickable: true }}
         modules={[Navigation, Autoplay]}
         className="listingSwiper"
+        onSlideClick={(swiper) => {
+          const category = categories[swiper.clickedIndex];
+          if (category) handleCategoryClick(category);
+        }}
       >
         {categories.map((category) => (
-          <SwiperSlide
-            key={category._id}
-            onClick={() => handleCategoryClick(category)}
-          >
-            <div className="listing-product">
+          <SwiperSlide key={category._id}>
+            <div className="listing-product" onClick={() => handleCategoryClick(category)}>
               <div className="listing-product-content">
                 <div className="listing-product-image">
                   <img

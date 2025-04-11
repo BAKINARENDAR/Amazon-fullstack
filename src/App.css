@@ -1048,6 +1048,19 @@ font-size: 1rem;
   color: #0f1111; 
   margin-bottom: 5px;
 }
+.pdtdetails2-current-price{
+  font-size: 2rem; 
+  font-weight: 250;
+  color: #0f1111; 
+  margin-bottom: 5px;
+  margin-left: 15px;
+}
+.pdtdetails2-original-price
+{
+  font-size: 0.8rem;
+  color: #1e1c1c;
+  margin-left: 15px;
+}
 .pdtdetails-original-price{
   font-size: 0.8rem;
   color: #1e1c1c;
@@ -1287,7 +1300,7 @@ font-size: 1rem;
   width: 32%;
   border: 1px solid #ccc;
   border-radius: 5px;
-  height: 500px;
+  height: 380px;
 }
 .details2 .info h4 {
   font-size: 1.7rem;
@@ -2084,3 +2097,106 @@ box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
  cursor: pointer;
 
 }
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  padding: 10px;
+}
+
+.category-item {
+  cursor: pointer;
+  text-align: center;
+}
+
+.category-content img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, auto)); /* Fixed width, no stretching */
+  gap: 15px; 
+  padding: 0; 
+  margin: 0; 
+  width: 100%; 
+  box-sizing: border-box;
+}
+.product {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+
+.product:hover {
+  transform: scale(1.05);
+}
+
+.product-content {
+  padding: 10px;
+  text-align: center;
+}
+
+.product-image img {
+  width: 150px;
+  height: 160px;
+  object-fit: cover;
+}
+
+.pdt-name p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.rating {
+  margin: 5px 0;
+}
+
+.featured .badge {
+  margin-bottom: 5px;
+}
+
+.discount {
+  color: #fff;
+  font-weight: bold;
+}
+
+.deal {
+  color: #555;
+  font-size: 12px;
+}
+
+.pdt-price .current-price {
+  font-size: 16px;
+  font-weight: bold;
+  color: #000;
+}
+
+.pdt-price .original-price {
+  font-size: 12px;
+  color: #888;
+}
+
+.product-listing-page {
+  padding: 20px;
+  background-color: #fff;
+}
+
+.listing-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.content-right h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.content-right-products {
+  width: 100%;
+}
+
